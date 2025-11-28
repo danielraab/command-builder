@@ -1,59 +1,214 @@
-# Temp
+<div align="center">
+  <img src="public/terminal-icon.svg" alt="Terminal Icon" width="100" height="100" style="color: #22c55e;">
+</div>
 
-This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 21.0.1.
+# Command Builder
 
-## Development server
+A modern Angular application that helps you build complex shell commands through an interactive GUI interface.
 
-To start a local development server, run:
+## Features
 
-```bash
-ng serve
+✨ **Interactive Command Building**
+- Visual selection of command flags and options
+- Real-time command preview as you make changes
+- Support for text, number, and enum parameter types
+
+🎯 **Multiple Commands**
+- Pre-configured commands: `ls`, `grep`, `find`
+- Easy navigation between commands via navbar
+- Extensible JSON-based command definitions
+
+📝 **Command Examples**
+- Pre-configured example commands for quick setup
+- One-click application of example configurations
+- Learn common command patterns
+
+💾 **Persistent History**
+- Saves your last 20 generated commands per command type
+- Stored in browser's localStorage
+- Timestamp tracking with relative time display
+
+🎨 **Modern UI**
+- Built with Tailwind CSS
+- Responsive design
+- Accessible interface (WCAG AA compliant)
+
+## Project Structure
+
+```
+src/
+├── app/
+│   ├── components/
+│   │   ├── navbar/               # Navigation bar component
+│   │   ├── home/                 # Home page component
+│   │   ├── command-builder/      # Main command builder interface
+│   │   └── command-history/      # Command history display
+│   ├── models/
+│   │   └── command.model.ts      # TypeScript interfaces for commands
+│   ├── services/
+│   │   └── command.service.ts    # Service for loading commands & managing history
+│   └── app.routes.ts             # Application routing configuration
+├── public/
+│   └── commands.json             # Command definitions (single source of truth)
+└── styles.css                    # Global styles
 ```
 
-Once the server is running, open your browser and navigate to `http://localhost:4200/`. The application will automatically reload whenever you modify any of the source files.
+## Commands Configuration
 
-## Code scaffolding
+All command information is stored in `/public/commands.json`. This single file contains:
 
-Angular CLI includes powerful code scaffolding tools. To generate a new component, run:
+- Available commands
+- Flags and options with descriptions
+- Parameter types (text, number, enum)
+- Default selections
+- Pre-configured examples
 
-```bash
-ng generate component component-name
+### Example Command Structure
+
+```json
+{
+  "id": "ls",
+  "name": "ls",
+  "description": "List directory contents",
+  "flags": [
+    {
+      "id": "long",
+      "flag": "-l",
+      "description": "Use a long listing format",
+      "selected": true
+    }
+  ],
+  "options": [
+    {
+      "id": "sort",
+      "option": "--sort",
+      "description": "Sort by specified criteria",
+      "selected": false,
+      "parameter": {
+        "type": "enum",
+        "enumValues": [
+          { "value": "size", "label": "Size", "description": "Sort by file size" }
+        ]
+      }
+    }
+  ],
+  "examples": [
+    {
+      "command": "ls -lah",
+      "description": "List all files including hidden ones",
+      "presets": {
+        "long": { "selected": true },
+        "all": { "selected": true }
+      }
+    }
+  ]
+}
 ```
 
-For a complete list of available schematics (such as `components`, `directives`, or `pipes`), run:
+## Getting Started
 
+### Prerequisites
+
+- Node.js (v20 or higher)
+- npm
+
+### Installation
+
+1. Clone the repository
+2. Install dependencies:
+   ```bash
+   npm install
+   ```
+
+### Development
+
+Run the development server:
 ```bash
-ng generate --help
+npm start
 ```
 
-## Building
+Navigate to `http://localhost:4200/`
 
-To build the project run:
+### Build
 
+Build the project for production:
 ```bash
-ng build
+npm run build
 ```
 
-This will compile your project and store the build artifacts in the `dist/` directory. By default, the production build optimizes your application for performance and speed.
+## Usage
 
-## Running unit tests
+1. **Select a Command**: Click on a command in the navigation bar (e.g., `ls`, `grep`, `find`)
 
-To execute unit tests with the [Vitest](https://vitest.dev/) test runner, use the following command:
+2. **Configure Options**:
+   - Check/uncheck flags to enable/disable them
+   - Select options and fill in required parameters
+   - Watch the command update in real-time
 
-```bash
-ng test
+3. **Use Examples**: Click "Apply Example" on any pre-configured example to quickly set up common scenarios
+
+4. **Save to History**: Click "Save to History" to store the generated command for later reference
+
+5. **Copy Command**: Click "Copy" to copy the generated command to your clipboard
+
+## Adding New Commands
+
+To add a new command, edit `/public/commands.json`:
+
+1. Add a new command object to the `commands` array
+2. Define the command's flags and options
+3. Optionally add example configurations
+4. The command will automatically appear in the navigation
+
+## Technology Stack
+
+- **Angular 20** - Latest version with standalone components
+- **TypeScript** - Type-safe development
+- **Tailwind CSS** - Utility-first CSS framework
+- **Signals** - Reactive state management
+- **RxJS** - For HTTP requests
+- **localStorage** - Client-side history persistence
+
+## Key Features Implementation
+
+### Reactive Command Generation
+
+The command string updates automatically using Angular signals and computed values:
+
+```typescript
+generatedCommand = computed(() => {
+  const cmd = this.command();
+  const parts: string[] = [cmd.name];
+  // Add flags and options...
+  return parts.join(' ');
+});
 ```
 
-## Running end-to-end tests
+### Local Storage History
 
-For end-to-end (e2e) testing, run:
+Commands are saved with timestamps and limited to 20 entries per command:
 
-```bash
-ng e2e
+```typescript
+saveToHistory(commandId: string, commandString: string): void {
+  const entry = { command: commandString, timestamp: Date.now() };
+  const history = [entry, ...this.getHistory(commandId)].slice(0, 20);
+  localStorage.setItem(`command-history-${commandId}`, JSON.stringify(history));
+}
 ```
 
-Angular CLI does not come with an end-to-end testing framework by default. You can choose one that suits your needs.
+### Parameter Types
 
-## Additional Resources
+Three parameter types are supported:
+- **Text**: Free-form text input
+- **Number**: Numeric values only
+- **Enum**: Dropdown selection from predefined values
 
-For more information on using the Angular CLI, including detailed command references, visit the [Angular CLI Overview and Command Reference](https://angular.dev/tools/cli) page.
+## Browser Support
+
+- Chrome/Edge (latest)
+- Firefox (latest)
+- Safari (latest)
+
+## License
+
+This project is open source and available under the MIT License.

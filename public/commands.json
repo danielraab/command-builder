@@ -1,0 +1,420 @@
+{
+  "commands": [
+    {
+      "id": "ls",
+      "name": "ls",
+      "description": "List directory contents - display information about files and directories",
+      "link": "https://man7.org/linux/man-pages/man1/ls.1.html",
+      "flags": [
+        {
+          "id": "all",
+          "flag": "-a",
+          "description": "Do not ignore entries starting with .",
+          "selected": true
+        },
+        {
+          "id": "almost-all",
+          "flag": "-A",
+          "description": "Do not list implied . and ..",
+          "selected": false
+        },
+        {
+          "id": "long",
+          "flag": "-l",
+          "description": "Use a long listing format",
+          "selected": true
+        },
+        {
+          "id": "human-readable",
+          "flag": "-h",
+          "description": "Print sizes in human readable format (e.g., 1K, 234M, 2G)",
+          "selected": true
+        },
+        {
+          "id": "reverse",
+          "flag": "-r",
+          "description": "Reverse order while sorting",
+          "selected": false
+        },
+        {
+          "id": "recursive",
+          "flag": "-R",
+          "description": "List subdirectories recursively",
+          "selected": false
+        }
+      ],
+      "options": [
+        {
+          "id": "sort",
+          "option": "--sort",
+          "description": "Sort by specified criteria",
+          "selected": false,
+          "parameter": {
+            "type": "enum",
+            "enumValues": [
+              { "value": "none", "label": "None", "description": "Do not sort" },
+              { "value": "size", "label": "Size", "description": "Sort by file size" },
+              { "value": "time", "label": "Time", "description": "Sort by modification time" },
+              { "value": "extension", "label": "Extension", "description": "Sort by file extension" }
+            ]
+          }
+        },
+        {
+          "id": "color",
+          "option": "--color",
+          "description": "Colorize the output",
+          "selected": false,
+          "parameter": {
+            "type": "enum",
+            "enumValues": [
+              { "value": "always", "label": "Always", "description": "Always colorize" },
+              { "value": "auto", "label": "Auto", "description": "Colorize if output is a terminal" },
+              { "value": "never", "label": "Never", "description": "Never colorize" }
+            ],
+            "defaultValue": "auto"
+          }
+        }
+      ],
+      "examples": [
+        {
+          "command": "ls -lah",
+          "description": "List all files including hidden ones in long format with human-readable sizes",
+          "presets": {
+            "long": { "selected": true },
+            "all": { "selected": true },
+            "human-readable": { "selected": true }
+          }
+        },
+        {
+          "command": "ls -lR",
+          "description": "List all files recursively in long format",
+          "presets": {
+            "long": { "selected": true },
+            "recursive": { "selected": true }
+          }
+        }
+      ]
+    },
+    {
+      "id": "grep",
+      "name": "grep",
+      "description": "Search for patterns in files - print lines that match patterns",
+      "link": "https://www.gnu.org/software/grep/manual/grep.html",
+      "flags": [
+        {
+          "id": "ignore-case",
+          "flag": "-i",
+          "description": "Ignore case distinctions in patterns and data",
+          "selected": false
+        },
+        {
+          "id": "invert-match",
+          "flag": "-v",
+          "description": "Invert the sense of matching, to select non-matching lines",
+          "selected": false
+        },
+        {
+          "id": "recursive",
+          "flag": "-r",
+          "description": "Read all files under each directory, recursively",
+          "selected": false
+        },
+        {
+          "id": "line-number",
+          "flag": "-n",
+          "description": "Prefix each line of output with the line number",
+          "selected": false
+        },
+        {
+          "id": "count",
+          "flag": "-c",
+          "description": "Suppress normal output; instead print a count of matching lines",
+          "selected": false
+        },
+        {
+          "id": "files-with-matches",
+          "flag": "-l",
+          "description": "Suppress normal output; instead print the name of each input file",
+          "selected": false
+        }
+      ],
+      "options": [
+        {
+          "id": "context",
+          "option": "-C",
+          "description": "Print NUM lines of output context",
+          "selected": false,
+          "parameter": {
+            "type": "number",
+            "placeholder": "3",
+            "defaultValue": 3
+          }
+        },
+        {
+          "id": "before-context",
+          "option": "-B",
+          "description": "Print NUM lines of leading context before matching lines",
+          "selected": false,
+          "parameter": {
+            "type": "number",
+            "defaultValue": "3"
+          }
+        },
+        {
+          "id": "after-context",
+          "option": "-A",
+          "description": "Print NUM lines of trailing context after matching lines",
+          "selected": false,
+          "parameter": {
+            "type": "number",
+            "defaultValue": "3"
+          }
+        },
+        {
+          "id": "max-count",
+          "option": "-m",
+          "description": "Stop reading a file after NUM matching lines",
+          "selected": false,
+          "parameter": {
+            "type": "number",
+            "placeholder": "10"
+          }
+        },
+        {
+          "id": "pattern",
+          "option": "",
+          "description": "Pattern to search for - supports regular expressions",
+          "link": "https://www.gnu.org/software/grep/manual/grep.html#Regular-Expressions",
+          "selected": true,
+          "parameter": {
+            "type": "text",
+            "placeholder": "search pattern"
+          }
+        },
+        {
+          "id": "file",
+          "option": "",
+          "description": "File(s) to search in",
+          "selected": false,
+          "parameter": {
+            "type": "text",
+            "placeholder": "filename or path"
+          }
+        }
+      ],
+      "examples": [
+        {
+          "command": "grep -rni \"TODO\" .",
+          "description": "Search recursively for 'TODO' (case-insensitive) with line numbers",
+          "presets": {
+            "recursive": { "selected": true },
+            "line-number": { "selected": true },
+            "ignore-case": { "selected": true },
+            "pattern": { "selected": true, "value": "TODO" },
+            "file": { "selected": true, "value": "." }
+          }
+        },
+        {
+          "command": "grep -c \"error\" app.log",
+          "description": "Count occurrences of 'error' in app.log",
+          "presets": {
+            "count": { "selected": true },
+            "pattern": { "selected": true, "value": "error" },
+            "file": { "selected": true, "value": "app.log" }
+          }
+        }
+      ]
+    },
+    {
+      "id": "find",
+      "name": "find",
+      "description": "Search for files in a directory hierarchy",
+      "link": "https://man7.org/linux/man-pages/man1/find.1.html",
+      "flags": [],
+      "options": [
+        {
+          "id": "path",
+          "option": "",
+          "description": "Starting path for the search",
+          "selected": true,
+          "parameter": {
+            "type": "text",
+            "placeholder": ".",
+            "defaultValue": "."
+          }
+        },
+        {
+          "id": "name",
+          "option": "-name",
+          "description": "Base of file name matches pattern",
+          "selected": false,
+          "parameter": {
+            "type": "text",
+            "placeholder": "*.txt"
+          }
+        },
+        {
+          "id": "type",
+          "option": "-type",
+          "description": "File type",
+          "selected": false,
+          "parameter": {
+            "type": "enum",
+            "enumValues": [
+              { "value": "f", "label": "Regular file", "description": "Regular file" },
+              { "value": "d", "label": "Directory", "description": "Directory" },
+              { "value": "l", "label": "Symbolic link", "description": "Symbolic link" }
+            ]
+          }
+        },
+        {
+          "id": "size",
+          "option": "-size",
+          "description": "File size (e.g., +100M, -1G)",
+          "selected": false,
+          "parameter": {
+            "type": "text",
+            "placeholder": "+100M"
+          }
+        },
+        {
+          "id": "maxdepth",
+          "option": "-maxdepth",
+          "description": "Descend at most levels of directories",
+          "selected": false,
+          "parameter": {
+            "type": "number",
+            "placeholder": "3"
+          }
+        }
+      ],
+      "examples": [
+        {
+          "command": "find . -type f -name \"*.js\"",
+          "description": "Find all JavaScript files in current directory and subdirectories",
+          "presets": {
+            "path": { "selected": true, "value": "." },
+            "type": { "selected": true, "value": "f" },
+            "name": { "selected": true, "value": "*.js" }
+          }
+        },
+        {
+          "command": "find /var/log -type f -size +100M",
+          "description": "Find files larger than 100MB in /var/log",
+          "presets": {
+            "path": { "selected": true, "value": "/var/log" },
+            "type": { "selected": true, "value": "f" },
+            "size": { "selected": true, "value": "+100M" }
+          }
+        }
+      ]
+    },
+    {
+      "id": "nano",
+      "name": "nano",
+      "description": "Simple text editor for the command line",
+      "link": "https://www.nano-editor.org/docs.php",
+      "flags": [
+        {
+          "id": "backup",
+          "flag": "-B",
+          "description": "Save backups of existing files",
+          "selected": false
+        },
+        {
+          "id": "const",
+          "flag": "-c",
+          "description": "Constantly show cursor position",
+          "selected": false
+        },
+        {
+          "id": "view",
+          "flag": "-v",
+          "description": "View mode (read-only)",
+          "selected": false
+        },
+        {
+          "id": "linenumbers",
+          "flag": "-l",
+          "description": "Show line numbers in front of the text",
+          "selected": true
+        },
+        {
+          "id": "mouse",
+          "flag": "-m",
+          "description": "Enable mouse support",
+          "selected": false
+        },
+        {
+          "id": "nohelp",
+          "flag": "-x",
+          "description": "Don't show the help lines at the bottom",
+          "selected": false
+        }
+      ],
+      "options": [
+        {
+          "id": "tabsize",
+          "option": "-T",
+          "description": "Set width of a tab to specified number of columns",
+          "selected": false,
+          "parameter": {
+            "type": "number",
+            "placeholder": "4",
+            "defaultValue": 4
+          }
+        },
+        {
+          "id": "syntax",
+          "option": "-Y",
+          "description": "Specify syntax highlighting",
+          "selected": false,
+          "parameter": {
+            "type": "enum",
+            "enumValues": [
+              { "value": "html", "label": "HTML", "description": "HTML syntax" },
+              { "value": "css", "label": "CSS", "description": "CSS syntax" },
+              { "value": "javascript", "label": "JavaScript", "description": "JavaScript syntax" },
+              { "value": "python", "label": "Python", "description": "Python syntax" },
+              { "value": "json", "label": "JSON", "description": "JSON syntax" },
+              { "value": "xml", "label": "XML", "description": "XML syntax" },
+              { "value": "sh", "label": "Shell", "description": "Shell script syntax" },
+              { "value": "c", "label": "C", "description": "C syntax" },
+              { "value": "java", "label": "Java", "description": "Java syntax" },
+              { "value": "markdown", "label": "Markdown", "description": "Markdown syntax" }
+            ]
+          }
+        },
+        {
+          "id": "file",
+          "option": "",
+          "description": "File to edit",
+          "selected": false,
+          "parameter": {
+            "type": "text",
+            "placeholder": "filename"
+          }
+        }
+      ],
+      "examples": [
+        {
+          "command": "nano -l config.txt",
+          "description": "Open config.txt with line numbers",
+          "presets": {
+            "linenumbers": { "selected": true },
+            "file": { "selected": true, "value": "config.txt" }
+          }
+        },
+        {
+          "command": "nano -Bm notes.md",
+          "description": "Edit notes.md with backup and mouse support",
+          "presets": {
+            "backup": { "selected": true },
+            "mouse": { "selected": true },
+            "file": { "selected": true, "value": "notes.md" }
+          }
+        }
+      ]
+    }
+  ]
+}

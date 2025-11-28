@@ -1,12 +1,19 @@
-import { Component, signal } from '@angular/core';
+import { Component, inject, OnInit } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
+import { NavbarComponent } from './components/navbar/navbar.component';
+import { FooterComponent } from './components/footer/footer.component';
+import { CommandService } from './services/command.service';
 
 @Component({
   selector: 'app-root',
-  imports: [RouterOutlet],
+  imports: [RouterOutlet, NavbarComponent, FooterComponent],
   templateUrl: './app.html',
   styleUrl: './app.css'
 })
-export class App {
-  protected readonly title = signal('temp');
+export class App implements OnInit {
+  private commandService = inject(CommandService);
+
+  async ngOnInit(): Promise<void> {
+    await this.commandService.loadCommands();
+  }
 }
