@@ -1,0 +1,9 @@
+services:
+  command-builder:
+    image: danielraab/command-builder:latest
+    container_name: command-builder
+    ports:
+      - "8080:80"
+    volumes:
+      - ../public/commands.json:/usr/share/nginx/html/commands.json:ro
+    restart: unless-stopped
