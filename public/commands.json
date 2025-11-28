@@ -1,96 +1,115 @@
 {
   "commands": [
     {
-      "id": "ls",
-      "name": "ls",
-      "description": "List directory contents - display information about files and directories",
-      "link": "https://man7.org/linux/man-pages/man1/ls.1.html",
-      "flags": [
-        {
-          "id": "all",
-          "flag": "-a",
-          "description": "Do not ignore entries starting with .",
-          "selected": true
-        },
-        {
-          "id": "almost-all",
-          "flag": "-A",
-          "description": "Do not list implied . and ..",
-          "selected": false
-        },
-        {
-          "id": "long",
-          "flag": "-l",
-          "description": "Use a long listing format",
-          "selected": true
-        },
-        {
-          "id": "human-readable",
-          "flag": "-h",
-          "description": "Print sizes in human readable format (e.g., 1K, 234M, 2G)",
-          "selected": true
-        },
-        {
-          "id": "reverse",
-          "flag": "-r",
-          "description": "Reverse order while sorting",
-          "selected": false
-        },
-        {
-          "id": "recursive",
-          "flag": "-R",
-          "description": "List subdirectories recursively",
-          "selected": false
-        }
-      ],
+      "id": "find",
+      "name": "find",
+      "description": "Search for files in a directory hierarchy",
+      "link": "https://man7.org/linux/man-pages/man1/find.1.html",
+      "flags": [],
       "options": [
         {
-          "id": "sort",
-          "option": "--sort",
-          "description": "Sort by specified criteria",
+          "id": "path",
+          "option": "",
+          "description": "Starting path for the search",
+          "selected": true,
+          "parameter": {
+            "type": "text",
+            "placeholder": ".",
+            "defaultValue": "."
+          }
+        },
+        {
+          "id": "name",
+          "option": "-name",
+          "description": "Base of file name matches pattern",
+          "selected": false,
+          "parameter": {
+            "type": "text",
+            "placeholder": "*.txt"
+          }
+        },
+        {
+          "id": "type",
+          "option": "-type",
+          "description": "File type",
           "selected": false,
           "parameter": {
             "type": "enum",
             "enumValues": [
-              { "value": "none", "label": "None", "description": "Do not sort" },
-              { "value": "size", "label": "Size", "description": "Sort by file size" },
-              { "value": "time", "label": "Time", "description": "Sort by modification time" },
-              { "value": "extension", "label": "Extension", "description": "Sort by file extension" }
+              {
+                "value": "f",
+                "label": "Regular file",
+                "description": "Regular file"
+              },
+              {
+                "value": "d",
+                "label": "Directory",
+                "description": "Directory"
+              },
+              {
+                "value": "l",
+                "label": "Symbolic link",
+                "description": "Symbolic link"
+              }
             ]
           }
         },
         {
-          "id": "color",
-          "option": "--color",
-          "description": "Colorize the output",
+          "id": "size",
+          "option": "-size",
+          "description": "File size (e.g., +100M, -1G)",
           "selected": false,
           "parameter": {
-            "type": "enum",
-            "enumValues": [
-              { "value": "always", "label": "Always", "description": "Always colorize" },
-              { "value": "auto", "label": "Auto", "description": "Colorize if output is a terminal" },
-              { "value": "never", "label": "Never", "description": "Never colorize" }
-            ],
-            "defaultValue": "auto"
+            "type": "text",
+            "placeholder": "+100M"
+          }
+        },
+        {
+          "id": "maxdepth",
+          "option": "-maxdepth",
+          "description": "Descend at most levels of directories",
+          "selected": false,
+          "parameter": {
+            "type": "number",
+            "placeholder": "3"
           }
         }
       ],
       "examples": [
         {
-          "command": "ls -lah",
-          "description": "List all files including hidden ones in long format with human-readable sizes",
+          "command": "find . -type f -name \"*.js\"",
+          "description": "Find all JavaScript files in current directory and subdirectories",
           "presets": {
-            "long": { "selected": true },
-            "all": { "selected": true },
-            "human-readable": { "selected": true }
+            "path": {
+              "selected": true,
+              "value": "."
+            },
+            "type": {
+              "selected": true,
+              "value": "f"
+            },
+            "name": {
+              "selected": true,
+              "value": "*.js"
+            }
           }
         },
         {
-          "command": "ls -lR",
-          "description": "List all files recursively in long format",
+          "command": "find /var/log -type f -size +100M",
+          "description": "Find files larger than 100MB in /var/log",
           "presets": {
-            "long": { "selected": true },
-            "recursive": { "selected": true }
+            "path": {
+              "selected": true,
+              "value": "/var/log"
+            },
+            "type": {
+              "selected": true,
+              "value": "f"
+            },
+            "size": {
+              "selected": true,
+              "value": "+100M"
+            }
           }
         }
       ]
@@ -207,104 +226,307 @@
           "command": "grep -rni \"TODO\" .",
           "description": "Search recursively for 'TODO' (case-insensitive) with line numbers",
           "presets": {
-            "recursive": { "selected": true },
-            "line-number": { "selected": true },
-            "ignore-case": { "selected": true },
-            "pattern": { "selected": true, "value": "TODO" },
-            "file": { "selected": true, "value": "." }
+            "recursive": {
+              "selected": true
+            },
+            "line-number": {
+              "selected": true
+            },
+            "ignore-case": {
+              "selected": true
+            },
+            "pattern": {
+              "selected": true,
+              "value": "TODO"
+            },
+            "file": {
+              "selected": true,
+              "value": "."
+            }
           }
         },
         {
           "command": "grep -c \"error\" app.log",
           "description": "Count occurrences of 'error' in app.log",
           "presets": {
-            "count": { "selected": true },
-            "pattern": { "selected": true, "value": "error" },
-            "file": { "selected": true, "value": "app.log" }
+            "count": {
+              "selected": true
+            },
+            "pattern": {
+              "selected": true,
+              "value": "error"
+            },
+            "file": {
+              "selected": true,
+              "value": "app.log"
+            }
           }
         }
       ]
     },
     {
-      "id": "find",
-      "name": "find",
-      "description": "Search for files in a directory hierarchy",
-      "link": "https://man7.org/linux/man-pages/man1/find.1.html",
-      "flags": [],
+      "id": "ln",
+      "name": "ln",
+      "description": "Create links between files - make hard links or symbolic links",
+      "link": "https://man7.org/linux/man-pages/man1/ln.1.html",
+      "flags": [
+        {
+          "id": "symbolic",
+          "flag": "-s",
+          "description": "Create symbolic (soft) link instead of hard link",
+          "selected": true
+        },
+        {
+          "id": "force",
+          "flag": "-f",
+          "description": "Remove existing destination files",
+          "selected": false
+        },
+        {
+          "id": "interactive",
+          "flag": "-i",
+          "description": "Prompt whether to remove destinations",
+          "selected": false
+        },
+        {
+          "id": "verbose",
+          "flag": "-v",
+          "description": "Print name of each linked file",
+          "selected": false
+        },
+        {
+          "id": "no-dereference",
+          "flag": "-n",
+          "description": "Treat destination that is a symlink to a directory as a normal file",
+          "selected": false
+        },
+        {
+          "id": "relative",
+          "flag": "-r",
+          "description": "Create symbolic links relative to link location",
+          "selected": false
+        },
+        {
+          "id": "backup",
+          "flag": "-b",
+          "description": "Make a backup of each existing destination file",
+          "selected": false
+        }
+      ],
       "options": [
         {
-          "id": "path",
+          "id": "target",
           "option": "",
-          "description": "Starting path for the search",
+          "description": "Target file or directory to link to",
           "selected": true,
           "parameter": {
             "type": "text",
-            "placeholder": ".",
-            "defaultValue": "."
+            "placeholder": "/path/to/target"
           }
         },
         {
-          "id": "name",
-          "option": "-name",
-          "description": "Base of file name matches pattern",
-          "selected": false,
+          "id": "link-name",
+          "option": "",
+          "description": "Name of the link to create",
+          "selected": true,
           "parameter": {
             "type": "text",
-            "placeholder": "*.txt"
-          }
-        },
-        {
-          "id": "type",
-          "option": "-type",
-          "description": "File type",
-          "selected": false,
-          "parameter": {
-            "type": "enum",
-            "enumValues": [
-              { "value": "f", "label": "Regular file", "description": "Regular file" },
-              { "value": "d", "label": "Directory", "description": "Directory" },
-              { "value": "l", "label": "Symbolic link", "description": "Symbolic link" }
-            ]
-          }
-        },
-        {
-          "id": "size",
-          "option": "-size",
-          "description": "File size (e.g., +100M, -1G)",
-          "selected": false,
-          "parameter": {
-            "type": "text",
-            "placeholder": "+100M"
-          }
-        },
-        {
-          "id": "maxdepth",
-          "option": "-maxdepth",
-          "description": "Descend at most levels of directories",
-          "selected": false,
-          "parameter": {
-            "type": "number",
-            "placeholder": "3"
+            "placeholder": "/path/to/link"
           }
         }
       ],
       "examples": [
         {
-          "command": "find . -type f -name \"*.js\"",
-          "description": "Find all JavaScript files in current directory and subdirectories",
+          "command": "ln -s /usr/bin/python3 /usr/local/bin/python",
+          "description": "Create a symbolic link from python to python3",
           "presets": {
-            "path": { "selected": true, "value": "." },
-            "type": { "selected": true, "value": "f" },
-            "name": { "selected": true, "value": "*.js" }
+            "symbolic": {
+              "selected": true
+            },
+            "target": {
+              "selected": true,
+              "value": "/usr/bin/python3"
+            },
+            "link-name": {
+              "selected": true,
+              "value": "/usr/local/bin/python"
+            }
           }
         },
         {
-          "command": "find /var/log -type f -size +100M",
-          "description": "Find files larger than 100MB in /var/log",
+          "command": "ln -sf /etc/nginx/sites-available/mysite /etc/nginx/sites-enabled/mysite",
+          "description": "Force create symbolic link, overwriting if exists",
           "presets": {
-            "path": { "selected": true, "value": "/var/log" },
-            "type": { "selected": true, "value": "f" },
-            "size": { "selected": true, "value": "+100M" }
+            "symbolic": {
+              "selected": true
+            },
+            "force": {
+              "selected": true
+            },
+            "target": {
+              "selected": true,
+              "value": "/etc/nginx/sites-available/mysite"
+            },
+            "link-name": {
+              "selected": true,
+              "value": "/etc/nginx/sites-enabled/mysite"
+            }
+          }
+        },
+        {
+          "command": "ln -srv /var/www/html/images /home/user/site/img",
+          "description": "Create relative symbolic link with verbose output",
+          "presets": {
+            "symbolic": {
+              "selected": true
+            },
+            "relative": {
+              "selected": true
+            },
+            "verbose": {
+              "selected": true
+            },
+            "target": {
+              "selected": true,
+              "value": "/var/www/html/images"
+            },
+            "link-name": {
+              "selected": true,
+              "value": "/home/user/site/img"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "ls",
+      "name": "ls",
+      "description": "List directory contents - display information about files and directories",
+      "link": "https://man7.org/linux/man-pages/man1/ls.1.html",
+      "flags": [
+        {
+          "id": "all",
+          "flag": "-a",
+          "description": "Do not ignore entries starting with .",
+          "selected": true
+        },
+        {
+          "id": "almost-all",
+          "flag": "-A",
+          "description": "Do not list implied . and ..",
+          "selected": false
+        },
+        {
+          "id": "long",
+          "flag": "-l",
+          "description": "Use a long listing format",
+          "selected": true
+        },
+        {
+          "id": "human-readable",
+          "flag": "-h",
+          "description": "Print sizes in human readable format (e.g., 1K, 234M, 2G)",
+          "selected": true
+        },
+        {
+          "id": "reverse",
+          "flag": "-r",
+          "description": "Reverse order while sorting",
+          "selected": false
+        },
+        {
+          "id": "recursive",
+          "flag": "-R",
+          "description": "List subdirectories recursively",
+          "selected": false
+        }
+      ],
+      "options": [
+        {
+          "id": "sort",
+          "option": "--sort",
+          "description": "Sort by specified criteria",
+          "selected": false,
+          "parameter": {
+            "type": "enum",
+            "enumValues": [
+              {
+                "value": "none",
+                "label": "None",
+                "description": "Do not sort"
+              },
+              {
+                "value": "size",
+                "label": "Size",
+                "description": "Sort by file size"
+              },
+              {
+                "value": "time",
+                "label": "Time",
+                "description": "Sort by modification time"
+              },
+              {
+                "value": "extension",
+                "label": "Extension",
+                "description": "Sort by file extension"
+              }
+            ]
+          }
+        },
+        {
+          "id": "color",
+          "option": "--color",
+          "description": "Colorize the output",
+          "selected": false,
+          "parameter": {
+            "type": "enum",
+            "enumValues": [
+              {
+                "value": "always",
+                "label": "Always",
+                "description": "Always colorize"
+              },
+              {
+                "value": "auto",
+                "label": "Auto",
+                "description": "Colorize if output is a terminal"
+              },
+              {
+                "value": "never",
+                "label": "Never",
+                "description": "Never colorize"
+              }
+            ],
+            "defaultValue": "auto"
+          }
+        }
+      ],
+      "examples": [
+        {
+          "command": "ls -lah",
+          "description": "List all files including hidden ones in long format with human-readable sizes",
+          "presets": {
+            "long": {
+              "selected": true
+            },
+            "all": {
+              "selected": true
+            },
+            "human-readable": {
+              "selected": true
+            }
+          }
+        },
+        {
+          "command": "ls -lR",
+          "description": "List all files recursively in long format",
+          "presets": {
+            "long": {
+              "selected": true
+            },
+            "recursive": {
+              "selected": true
+            }
           }
         }
       ]
@@ -372,16 +594,56 @@
           "parameter": {
             "type": "enum",
             "enumValues": [
-              { "value": "html", "label": "HTML", "description": "HTML syntax" },
-              { "value": "css", "label": "CSS", "description": "CSS syntax" },
-              { "value": "javascript", "label": "JavaScript", "description": "JavaScript syntax" },
-              { "value": "python", "label": "Python", "description": "Python syntax" },
-              { "value": "json", "label": "JSON", "description": "JSON syntax" },
-              { "value": "xml", "label": "XML", "description": "XML syntax" },
-              { "value": "sh", "label": "Shell", "description": "Shell script syntax" },
-              { "value": "c", "label": "C", "description": "C syntax" },
-              { "value": "java", "label": "Java", "description": "Java syntax" },
-              { "value": "markdown", "label": "Markdown", "description": "Markdown syntax" }
+              {
+                "value": "html",
+                "label": "HTML",
+                "description": "HTML syntax"
+              },
+              {
+                "value": "css",
+                "label": "CSS",
+                "description": "CSS syntax"
+              },
+              {
+                "value": "javascript",
+                "label": "JavaScript",
+                "description": "JavaScript syntax"
+              },
+              {
+                "value": "python",
+                "label": "Python",
+                "description": "Python syntax"
+              },
+              {
+                "value": "json",
+                "label": "JSON",
+                "description": "JSON syntax"
+              },
+              {
+                "value": "xml",
+                "label": "XML",
+                "description": "XML syntax"
+              },
+              {
+                "value": "sh",
+                "label": "Shell",
+                "description": "Shell script syntax"
+              },
+              {
+                "value": "c",
+                "label": "C",
+                "description": "C syntax"
+              },
+              {
+                "value": "java",
+                "label": "Java",
+                "description": "Java syntax"
+              },
+              {
+                "value": "markdown",
+                "label": "Markdown",
+                "description": "Markdown syntax"
+              }
             ]
           }
         },
@@ -401,17 +663,438 @@
           "command": "nano -l config.txt",
           "description": "Open config.txt with line numbers",
           "presets": {
-            "linenumbers": { "selected": true },
-            "file": { "selected": true, "value": "config.txt" }
+            "linenumbers": {
+              "selected": true
+            },
+            "file": {
+              "selected": true,
+              "value": "config.txt"
+            }
           }
         },
         {
           "command": "nano -Bm notes.md",
           "description": "Edit notes.md with backup and mouse support",
           "presets": {
-            "backup": { "selected": true },
-            "mouse": { "selected": true },
-            "file": { "selected": true, "value": "notes.md" }
+            "backup": {
+              "selected": true
+            },
+            "mouse": {
+              "selected": true
+            },
+            "file": {
+              "selected": true,
+              "value": "notes.md"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "rsync",
+      "name": "rsync",
+      "description": "Fast, versatile file copying tool for local and remote synchronization",
+      "link": "https://man7.org/linux/man-pages/man1/rsync.1.html",
+      "flags": [
+        {
+          "id": "archive",
+          "flag": "-a",
+          "description": "Archive mode; equals -rlptgoD (recursive, links, perms, times, group, owner, devices)",
+          "selected": true
+        },
+        {
+          "id": "verbose",
+          "flag": "-v",
+          "description": "Increase verbosity",
+          "selected": true
+        },
+        {
+          "id": "compress",
+          "flag": "-z",
+          "description": "Compress file data during the transfer",
+          "selected": false
+        },
+        {
+          "id": "progress",
+          "flag": "--progress",
+          "description": "Show progress during transfer",
+          "selected": true
+        },
+        {
+          "id": "dry-run",
+          "flag": "-n",
+          "description": "Perform a trial run with no changes made",
+          "selected": false
+        },
+        {
+          "id": "delete",
+          "flag": "--delete",
+          "description": "Delete extraneous files from destination dirs",
+          "selected": false
+        },
+        {
+          "id": "recursive",
+          "flag": "-r",
+          "description": "Recurse into directories",
+          "selected": false
+        },
+        {
+          "id": "update",
+          "flag": "-u",
+          "description": "Skip files that are newer on the receiver",
+          "selected": false
+        },
+        {
+          "id": "partial",
+          "flag": "--partial",
+          "description": "Keep partially transferred files",
+          "selected": false
+        },
+        {
+          "id": "human-readable",
+          "flag": "-h",
+          "description": "Output numbers in a human-readable format",
+          "selected": false
+        }
+      ],
+      "options": [
+        {
+          "id": "exclude",
+          "option": "--exclude",
+          "description": "Exclude files matching pattern",
+          "selected": false,
+          "parameter": {
+            "type": "text",
+            "placeholder": "*.tmp"
+          }
+        },
+        {
+          "id": "include",
+          "option": "--include",
+          "description": "Include files matching pattern",
+          "selected": false,
+          "parameter": {
+            "type": "text",
+            "placeholder": "*.txt"
+          }
+        },
+        {
+          "id": "bwlimit",
+          "option": "--bwlimit",
+          "description": "Limit bandwidth (KB/s)",
+          "selected": false,
+          "parameter": {
+            "type": "number",
+            "placeholder": "1000"
+          }
+        },
+        {
+          "id": "chmod",
+          "option": "--chmod",
+          "description": "Affect file and/or directory permissions",
+          "selected": false,
+          "parameter": {
+            "type": "text",
+            "placeholder": "755"
+          }
+        },
+        {
+          "id": "ssh-port",
+          "option": "-e",
+          "description": "Specify an alternative remote shell program",
+          "selected": false,
+          "parameter": {
+            "type": "text",
+            "placeholder": "ssh -p 2222"
+          }
+        },
+        {
+          "id": "source",
+          "option": "",
+          "description": "Source file or directory",
+          "selected": true,
+          "parameter": {
+            "type": "text",
+            "placeholder": "/path/to/source"
+          }
+        },
+        {
+          "id": "destination",
+          "option": "",
+          "description": "Destination file or directory",
+          "selected": true,
+          "parameter": {
+            "type": "text",
+            "placeholder": "/path/to/destination"
+          }
+        }
+      ],
+      "examples": [
+        {
+          "command": "rsync -avh --progress /source/ /destination/",
+          "description": "Sync source to destination with archive mode, verbose output, human-readable sizes, and progress",
+          "presets": {
+            "archive": {
+              "selected": true
+            },
+            "verbose": {
+              "selected": true
+            },
+            "human-readable": {
+              "selected": true
+            },
+            "progress": {
+              "selected": true
+            },
+            "source": {
+              "selected": true,
+              "value": "/source/"
+            },
+            "destination": {
+              "selected": true,
+              "value": "/destination/"
+            }
+          }
+        },
+        {
+          "command": "rsync -avz --delete user@remote:/data/ /local/backup/",
+          "description": "Sync from remote server with compression and delete extra files",
+          "presets": {
+            "archive": {
+              "selected": true
+            },
+            "verbose": {
+              "selected": true
+            },
+            "compress": {
+              "selected": true
+            },
+            "delete": {
+              "selected": true
+            },
+            "source": {
+              "selected": true,
+              "value": "user@remote:/data/"
+            },
+            "destination": {
+              "selected": true,
+              "value": "/local/backup/"
+            }
+          }
+        },
+        {
+          "command": "rsync -avn --exclude='*.log' /source/ /destination/",
+          "description": "Dry run sync excluding log files",
+          "presets": {
+            "archive": {
+              "selected": true
+            },
+            "verbose": {
+              "selected": true
+            },
+            "dry-run": {
+              "selected": true
+            },
+            "exclude": {
+              "selected": true,
+              "value": "*.log"
+            },
+            "source": {
+              "selected": true,
+              "value": "/source/"
+            },
+            "destination": {
+              "selected": true,
+              "value": "/destination/"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "tar",
+      "name": "tar",
+      "description": "Archive utility - create, extract, and manipulate tar archives",
+      "link": "https://www.gnu.org/software/tar/manual/tar.html",
+      "flags": [
+        {
+          "id": "create",
+          "flag": "-c",
+          "description": "Create a new archive",
+          "selected": true
+        },
+        {
+          "id": "extract",
+          "flag": "-x",
+          "description": "Extract files from an archive",
+          "selected": false
+        },
+        {
+          "id": "list",
+          "flag": "-t",
+          "description": "List the contents of an archive",
+          "selected": false
+        },
+        {
+          "id": "verbose",
+          "flag": "-v",
+          "description": "Verbosely list files processed",
+          "selected": true
+        },
+        {
+          "id": "gzip",
+          "flag": "-z",
+          "description": "Filter the archive through gzip (.tar.gz)",
+          "selected": false
+        },
+        {
+          "id": "bzip2",
+          "flag": "-j",
+          "description": "Filter the archive through bzip2 (.tar.bz2)",
+          "selected": false
+        },
+        {
+          "id": "xz",
+          "flag": "-J",
+          "description": "Filter the archive through xz (.tar.xz)",
+          "selected": false
+        },
+        {
+          "id": "preserve-permissions",
+          "flag": "-p",
+          "description": "Preserve permissions when extracting",
+          "selected": false
+        },
+        {
+          "id": "dereference",
+          "flag": "-h",
+          "description": "Follow symbolic links",
+          "selected": false
+        }
+      ],
+      "options": [
+        {
+          "id": "file",
+          "option": "-f",
+          "description": "Archive file name",
+          "selected": true,
+          "parameter": {
+            "type": "text",
+            "placeholder": "archive.tar"
+          }
+        },
+        {
+          "id": "directory",
+          "option": "-C",
+          "description": "Change to directory before performing operations",
+          "selected": false,
+          "parameter": {
+            "type": "text",
+            "placeholder": "/path/to/dir"
+          }
+        },
+        {
+          "id": "exclude",
+          "option": "--exclude",
+          "description": "Exclude files matching pattern",
+          "selected": false,
+          "parameter": {
+            "type": "text",
+            "placeholder": "*.log"
+          }
+        },
+        {
+          "id": "strip-components",
+          "option": "--strip-components",
+          "description": "Strip NUMBER leading components from file names on extraction",
+          "selected": false,
+          "parameter": {
+            "type": "number",
+            "placeholder": "1"
+          }
+        },
+        {
+          "id": "files",
+          "option": "",
+          "description": "Files or directories to archive/extract",
+          "selected": false,
+          "parameter": {
+            "type": "text",
+            "placeholder": "file1 file2 dir/"
+          }
+        }
+      ],
+      "examples": [
+        {
+          "command": "tar -czf archive.tar.gz folder/",
+          "description": "Create a gzip compressed tar archive of a folder",
+          "presets": {
+            "create": {
+              "selected": true
+            },
+            "gzip": {
+              "selected": true
+            },
+            "file": {
+              "selected": true,
+              "value": "archive.tar.gz"
+            },
+            "files": {
+              "selected": true,
+              "value": "folder/"
+            }
+          }
+        },
+        {
+          "command": "tar -xzf archive.tar.gz",
+          "description": "Extract a gzip compressed tar archive",
+          "presets": {
+            "extract": {
+              "selected": true
+            },
+            "gzip": {
+              "selected": true
+            },
+            "file": {
+              "selected": true,
+              "value": "archive.tar.gz"
+            }
+          }
+        },
+        {
+          "command": "tar -tvf archive.tar",
+          "description": "List contents of a tar archive",
+          "presets": {
+            "list": {
+              "selected": true
+            },
+            "verbose": {
+              "selected": true
+            },
+            "file": {
+              "selected": true,
+              "value": "archive.tar"
+            }
+          }
+        },
+        {
+          "command": "tar -xzf archive.tar.gz -C /destination/",
+          "description": "Extract archive to a specific directory",
+          "presets": {
+            "extract": {
+              "selected": true
+            },
+            "gzip": {
+              "selected": true
+            },
+            "file": {
+              "selected": true,
+              "value": "archive.tar.gz"
+            },
+            "directory": {
+              "selected": true,
+              "value": "/destination/"
+            }
           }
         }
       ]
