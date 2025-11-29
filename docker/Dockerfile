@@ -21,8 +21,8 @@ FROM nginx:alpine
 # Copy built static files from builder
 COPY --from=builder /app/dist/temp/browser /usr/share/nginx/html
 
-# Copy nginx configuration (optional)
-# COPY docker/nginx.conf /etc/nginx/conf.d/default.conf
+# Copy nginx configuration
+COPY docker/nginx.conf /etc/nginx/conf.d/default.conf
 
 # Expose port 80
 EXPOSE 80
