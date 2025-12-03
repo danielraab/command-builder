@@ -17,19 +17,6 @@ The Command Builder is a static Angular application served via nginx. It can be 
 - Docker Engine 20.10 or later
 - Docker Compose V2 (optional, for using docker-compose.yml)
 
-## Building the Docker Image
-
-From the project root directory:
-
-```bash
-docker build -f docker/Dockerfile -t command-builder:latest .
-```
-
-Or with a custom tag:
-
-```bash
-docker build -f docker/Dockerfile -t danielraab/command-builder:0.1.0 .
-```
 
 ## Running with Docker Run
 
@@ -40,8 +27,9 @@ docker run -d \
   --name command-builder \
   -p 8080:80 \
   -v $(pwd)/public/commands.json:/usr/share/nginx/html/commands.json:ro \
-  danielraab/command-builder:latest
+  ghcr.io/danielraab/command-builder:latest
 ```
+ensure that the `commands.json` file exists. remove the mount if you want use the commands.json from the repository (https://github.com/danielraab/command-builder/blob/master/public/commands.json).
 
 ### With Custom Commands File
 
@@ -52,7 +40,7 @@ docker run -d \
   --name command-builder \
   -p 8080:80 \
   -v /path/to/your/commands.json:/usr/share/nginx/html/commands.json:ro \
-  danielraab/command-builder:latest
+  ghcr.io/danielraab/command-builder:latest
 ```
 
 ### Options Explained
@@ -61,7 +49,7 @@ docker run -d \
 - `--name command-builder`: Assign a name to the container
 - `-p 8080:80`: Map port 80 from container to host port 8080
 - `-v`: Mount the commands.json file (`:ro` means read-only)
-- `danielraab/command-builder:latest`: The image to use
+- `ghcr.io/danielraab/command-builder:latest`: The image to use
 
 ## Running with Docker Compose
 
@@ -108,7 +96,7 @@ docker run -d \
   --name command-builder \
   -p 3000:80 \
   -v $(pwd)/public/commands.json:/usr/share/nginx/html/commands.json:ro \
-  danielraab/command-builder:latest
+  ghcr.io/danielraab/command-builder:latest
 ```
 
 Then access the application at `http://localhost:3000`
@@ -138,6 +126,36 @@ The final image is based on `nginx:alpine`, providing a minimal footprint optimi
 
 ## Troubleshooting
 
+### File mount error: "not a directory"
+
+If you see an error like:
+```
+docker: Error response from daemon: failed to create task for container: OCI runtime create failed: 
+unable to start container process: error mounting "/path/to/commands.json" to rootfs: not a directory
+```
+
+**Cause**: Docker requires that the source file exists on the host before mounting. If the file doesn't exist, Docker creates a directory instead, causing the mount to fail.
+
+**Solution**: Ensure the `public/commands.json` file exists before starting the container:
+
+```bash
+# From the project root
+ls -la public/commands.json
+
+# If the file doesn't exist, copy it from the repository
+# Or create it with proper content
+```
+
+When running from a different directory, use absolute paths:
+
+```bash
+docker run -d \
+  --name command-builder \
+  -p 8080:80 \
+  -v /absolute/path/to/public/commands.json:/usr/share/nginx/html/commands.json:ro \
+  ghcr.io/danielraab/command-builder:latest
+```
+
 ### Container won't start
 
 Check the logs:
@@ -153,7 +171,7 @@ docker run -d \
   --name command-builder \
   -p 8081:80 \
   -v $(pwd)/public/commands.json:/usr/share/nginx/html/commands.json:ro \
-  danielraab/command-builder:latest
+  ghcr.io/danielraab/command-builder:latest
 ```
 
 ### Commands not loading
@@ -191,7 +209,7 @@ docker-compose restart
      --cpus="0.5" \
      -p 8080:80 \
      -v $(pwd)/public/commands.json:/usr/share/nginx/html/commands.json:ro \
-     danielraab/command-builder:latest
+     ghcr.io/danielraab/command-builder:latest
    ```
 3. **Use a reverse proxy** (nginx, Traefik) for SSL/TLS termination
 4. **Enable health checks** in production environments
@@ -199,7 +217,24 @@ docker-compose restart
 
 ## Building and Pushing to Registry
 
-### Docker Hub
+### GitHub Container Registry (Default)
+
+```bash
+# Build
+docker build -f docker/Dockerfile -t ghcr.io/danielraab/command-builder:0.1.0 .
+
+# Tag as latest
+docker tag ghcr.io/danielraab/command-builder:0.1.0 ghcr.io/danielraab/command-builder:latest
+
+# Login
+echo $GITHUB_TOKEN | docker login ghcr.io -u danielraab --password-stdin
+
+# Push
+docker push ghcr.io/danielraab/command-builder:0.1.0
+docker push ghcr.io/danielraab/command-builder:latest
+```
+
+### Docker Hub (Alternative)
 
 ```bash
 # Build
@@ -211,19 +246,6 @@ docker tag danielraab/command-builder:0.1.0 danielraab/command-builder:latest
 # Push
 docker push danielraab/command-builder:0.1.0
 docker push danielraab/command-builder:latest
-```
-
-### GitHub Container Registry
-
-```bash
-# Build
-docker build -f docker/Dockerfile -t ghcr.io/danielraab/command-builder:0.1.0 .
-
-# Login
-echo $GITHUB_TOKEN | docker login ghcr.io -u danielraab --password-stdin
-
-# Push
-docker push ghcr.io/danielraab/command-builder:0.1.0
 ```
 
 ## License
