@@ -1,11 +1,15 @@
 import { Component, signal, computed, effect, inject, OnInit, viewChild } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { Title } from '@angular/platform-browser';
-import { FormsModule } from '@angular/forms';
-import { CommonModule } from '@angular/common';
 import { CommandService } from '../../services/command.service';
-import { Command, Flag, Option } from '../../models/command.model';
+import { Command } from '../../models/command.model';
 import { CommandHistoryComponent } from '../command-history/command-history.component';
+import { LoadingSpinnerComponent } from './loading-spinner.component';
+import { CommandHeaderComponent } from './command-header.component';
+import { GeneratedCommandDisplayComponent } from './generated-command-display.component';
+import { FlagItemComponent } from './flag-item.component';
+import { OptionItemComponent } from './option-item.component';
+import { ExampleCardComponent, CommandExample } from './example-card.component';
 
 interface FlagState {
   id: string;
@@ -20,154 +24,54 @@ interface OptionState {
 
 @Component({
   selector: 'app-command-builder',
-  imports: [FormsModule, CommonModule, CommandHistoryComponent],
+  imports: [
+    CommandHistoryComponent,
+    LoadingSpinnerComponent,
+    CommandHeaderComponent,
+    GeneratedCommandDisplayComponent,
+    FlagItemComponent,
+    OptionItemComponent,
+    ExampleCardComponent
+  ],
   template: `
     @if (isLoading()) {
-      <div class="container mx-auto px-4 py-8">
-        <div class="bg-white rounded-lg shadow-md p-12 text-center">
-          <div class="inline-block animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mb-4"></div>
-          <h2 class="text-xl font-semibold text-gray-800">Loading command...</h2>
-        </div>
-      </div>
+      <app-loading-spinner />
     } @else if (command(); as cmd) {
       <div class="container mx-auto px-4 py-8 max-w-6xl">
-        <!-- Command Header -->
-        <div class="bg-white rounded-lg shadow-md p-6 mb-6">
-          <h1 class="text-3xl font-bold mb-2 font-mono">{{ cmd.name }}</h1>
-          <p class="text-gray-600">
-            {{ cmd.description }}
-            @if (cmd.link) {
-              <a [href]="cmd.link" target="_blank" rel="noopener noreferrer" class="ml-2 text-blue-500 hover:text-blue-700 underline">
-                View documentation
-              </a>
-            }
-          </p>
-        </div>
+        <app-command-header [command]="cmd" />
 
-        <!-- Generated Command -->
-        <div class="bg-gray-900 text-green-400 rounded-lg shadow-md p-6 mb-6  sticky top-0 z-10 ">
-          <div class="flex items-center justify-between mb-2">
-            <h2 class="text-lg font-semibold">Generated Command</h2>
-            <button
-              (click)="copyToClipboard()"
-              class="px-4 py-2 bg-green-600 hover:bg-green-700 text-white rounded-md transition-colors"
-              [attr.aria-label]="'Copy command to clipboard'"
-            >
-              {{ copyButtonText() }}
-            </button>
-          </div>
-          <code class="text-xl font-mono block break-all">{{ generatedCommand() }}</code>
-        </div>
+        <app-generated-command-display [command]="generatedCommand()" />
 
         <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
           <!-- Left Column: Flags and Options -->
           <div class="lg:col-span-2 space-y-6">
-            <!-- Flags Section -->
             @if (cmd.flags.length > 0) {
               <div class="bg-white rounded-lg shadow-md p-6">
                 <h2 class="text-2xl font-bold mb-4">Flags</h2>
                 <div class="space-y-3">
                   @for (flag of cmd.flags; track flag.id) {
-                    <div class="flex items-start space-x-3 p-3 hover:bg-gray-50 rounded-md">
-                      <input
-                        type="checkbox"
-                        [id]="'flag-' + flag.id"
-                        [checked]="getFlagState(flag.id)"
-                        (change)="toggleFlag(flag.id)"
-                        class="mt-1 w-4 h-4 text-blue-600 rounded focus:ring-2 focus:ring-blue-500"
-                      />
-                      <label [attr.for]="'flag-' + flag.id" class="flex-1 cursor-pointer">
-                        <div class="font-mono font-semibold text-blue-600">{{ flag.flag }}</div>
-                        <div class="text-sm text-gray-600">
-                          {{ flag.description }}
-                          @if (flag.link) {
-                            <a [href]="flag.link" target="_blank" rel="noopener noreferrer" class="ml-1 text-blue-500 hover:text-blue-700 underline" (click)="$event.stopPropagation()">
-                              Learn more
-                            </a>
-                          }
-                        </div>
-                      </label>
-                    </div>
+                    <app-flag-item
+                      [flag]="flag"
+                      [selected]="getFlagState(flag.id)"
+                      (toggle)="toggleFlag(flag.id)"
+                    />
                   }
                 </div>
               </div>
             }
 
-            <!-- Options Section -->
             @if (cmd.options.length > 0) {
               <div class="bg-white rounded-lg shadow-md p-6">
                 <h2 class="text-2xl font-bold mb-4">Options</h2>
                 <div class="space-y-4">
                   @for (option of cmd.options; track option.id) {
-                    <div class="p-4 border border-gray-200 rounded-md hover:border-blue-300 transition-colors">
-                      <div class="flex items-start space-x-3 mb-3">
-                        <input
-                          type="checkbox"
-                          [id]="'option-' + option.id"
-                          [checked]="getOptionState(option.id).selected"
-                          (change)="toggleOption(option.id)"
-                          class="mt-1 w-4 h-4 text-blue-600 rounded focus:ring-2 focus:ring-blue-500"
-                        />
-                        <label [attr.for]="'option-' + option.id" class="flex-1 cursor-pointer">
-                          @if (option.option) {
-                            <div class="font-mono font-semibold text-blue-600">{{ option.option }}</div>
-                          }
-                          <div class="text-sm text-gray-600">
-                            {{ option.description }}
-                            @if (option.link) {
-                              <a [href]="option.link" target="_blank" rel="noopener noreferrer" class="ml-1 text-blue-500 hover:text-blue-700 underline" (click)="$event.stopPropagation()">
-                                Learn more
-                              </a>
-                            }
-                          </div>
-                        </label>
-                      </div>
-
-                      @if (option.parameter && getOptionState(option.id).selected) {
-                        <div class="ml-7 mt-2">
-                          @if (option.parameter.type === 'text') {
-                            <input
-                              type="text"
-                              [id]="'param-' + option.id"
-                              [value]="getOptionState(option.id).value || ''"
-                              (input)="updateOptionValue(option.id, $event)"
-                              [placeholder]="option.parameter.placeholder || ''"
-                              class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                              [attr.aria-label]="option.description + ' value'"
-                            />
-                          }
-
-                          @if (option.parameter.type === 'number') {
-                            <input
-                              type="number"
-                              [id]="'param-' + option.id"
-                              [value]="getOptionState(option.id).value || ''"
-                              (input)="updateOptionValue(option.id, $event)"
-                              [placeholder]="option.parameter.placeholder || ''"
-                              class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                              [attr.aria-label]="option.description + ' value'"
-                            />
-                          }
-
-                          @if (option.parameter.type === 'enum' && option.parameter.enumValues) {
-                            <select
-                              [id]="'param-' + option.id"
-                              [value]="getOptionState(option.id).value || option.parameter.defaultValue || ''"
-                              (change)="updateOptionValue(option.id, $event)"
-                              class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                              [attr.aria-label]="option.description + ' value'"
-                            >
-                              <option value="">Select...</option>
-                              @for (enumVal of option.parameter.enumValues; track enumVal.value) {
-                                <option [value]="enumVal.value" [title]="enumVal.description || ''">
-                                  {{ enumVal.label }}
-                                </option>
-                              }
-                            </select>
-                          }
-                        </div>
-                      }
-                    </div>
+                    <app-option-item
+                      [option]="option"
+                      [selected]="getOptionState(option.id).selected"
+                      [value]="getOptionState(option.id).value"
+                      (toggle)="toggleOption(option.id)"
+                      (valueChange)="updateOptionValue(option.id, $event)"
+                    />
                   }
                 </div>
               </div>
@@ -181,19 +85,10 @@ interface OptionState {
                 <h2 class="text-xl font-bold mb-4">Examples</h2>
                 <div class="space-y-4">
                   @for (example of cmd.examples; track example.command) {
-                    <div class="border border-gray-200 rounded-md p-4 hover:border-blue-300 transition-colors">
-                      <code class="text-sm font-mono text-blue-600 block mb-2 break-all">
-                        {{ example.command }}
-                      </code>
-                      <p class="text-xs text-gray-600 mb-3">{{ example.description }}</p>
-                      <button
-                        (click)="applyExample(example)"
-                        class="w-full px-3 py-2 bg-blue-600 hover:bg-blue-700 text-white text-sm rounded-md transition-colors"
-                        [attr.aria-label]="'Apply example: ' + example.description"
-                      >
-                        Apply Example
-                      </button>
-                    </div>
+                    <app-example-card
+                      [example]="example"
+                      (apply)="applyExample(example)"
+                    />
                   }
                 </div>
               </div>
@@ -218,7 +113,6 @@ interface OptionState {
           </div>
         </div>
 
-        <!-- Command History -->
         <div class="mt-6">
           <app-command-history [commandId]="cmd.id" />
         </div>
@@ -231,8 +125,7 @@ interface OptionState {
         </div>
       </div>
     }
-  `,
-  styles: ``
+  `
 })
 export class CommandBuilderComponent implements OnInit {
   private route = inject(ActivatedRoute);
@@ -244,7 +137,6 @@ export class CommandBuilderComponent implements OnInit {
   isLoading = signal(true);
   private flagStates = signal<Map<string, FlagState>>(new Map());
   private optionStates = signal<Map<string, OptionState>>(new Map());
-  copyButtonText = signal('Copy');
   saveButtonText = signal('Save to History');
 
   generatedCommand = computed(() => {
@@ -369,26 +261,22 @@ export class CommandBuilderComponent implements OnInit {
     }
   }
 
-  applyExample(example: any): void {
+  applyExample(example: CommandExample): void {
     const cmd = this.command();
     if (!cmd) return;
 
-    // Reset states
     this.initializeStates(cmd);
 
-    // Apply presets
     const flagMap = new Map(this.flagStates());
     const optionMap = new Map(this.optionStates());
 
     Object.keys(example.presets).forEach(key => {
       const preset = example.presets[key];
       
-      // Check if it's a flag
       if (flagMap.has(key)) {
         flagMap.set(key, { id: key, selected: preset.selected });
       }
       
-      // Check if it's an option
       if (optionMap.has(key)) {
         optionMap.set(key, {
           id: key,
@@ -414,19 +302,9 @@ export class CommandBuilderComponent implements OnInit {
     const cmdString = this.generatedCommand();
     if (cmd && cmdString) {
       this.commandService.saveToHistory(cmd.id, cmdString);
-      // Refresh history instantly
       this.historyComponent()?.loadHistory();
-      // Show feedback
       this.saveButtonText.set('✓ Saved!');
       setTimeout(() => this.saveButtonText.set('Save to History'), 2000);
     }
-  }
-
-  copyToClipboard(): void {
-    const cmd = this.generatedCommand();
-    navigator.clipboard.writeText(cmd).then(() => {
-      this.copyButtonText.set('Copied!');
-      setTimeout(() => this.copyButtonText.set('Copy'), 2000);
-    });
   }
 }
