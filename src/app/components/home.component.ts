@@ -1,7 +1,7 @@
 import { Component, computed, inject, OnInit } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { Title } from '@angular/platform-browser';
-import { CommandService } from '../../services/command.service';
+import { CommandService } from '../services/command.service';
 
 @Component({
   selector: 'app-home',

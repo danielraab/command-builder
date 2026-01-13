@@ -1,5 +1,5 @@
 import { Component, input } from '@angular/core';
-import { Command } from '../../models/command.model';
+import { Command } from '../../../models/command.model';
 
 @Component({
   selector: 'app-command-header',

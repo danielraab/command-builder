@@ -4,13 +4,13 @@ import { Title } from '@angular/platform-browser';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { CommandService } from '../../services/command.service';
 import { Command } from '../../models/command.model';
-import { CommandHistoryComponent } from '../command-history/command-history.component';
-import { LoadingSpinnerComponent } from './loading-spinner.component';
-import { CommandHeaderComponent } from './command-header.component';
-import { GeneratedCommandDisplayComponent } from './generated-command-display.component';
-import { FlagItemComponent } from './flag-item.component';
-import { OptionItemComponent } from './option-item.component';
-import { ExampleCardComponent, CommandExample } from './example-card.component';
+import { CommandHistoryComponent } from '../command-history.component';
+import { LoadingSpinnerComponent } from '../shared/loading-spinner.component';
+import { CommandHeaderComponent } from './components/command-header.component';
+import { GeneratedCommandDisplayComponent } from './components/generated-command-display.component';
+import { FlagItemComponent } from './components/flag-item.component';
+import { OptionItemComponent } from './components/option-item.component';
+import { ExampleCardComponent, CommandExample } from './components/example-card.component';
 
 interface FlagState {
   id: string;

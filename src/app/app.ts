@@ -1,7 +1,7 @@
 import { Component, inject, OnInit } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
-import { NavbarComponent } from './components/navbar/navbar.component';
-import { FooterComponent } from './components/footer/footer.component';
+import { NavbarComponent } from './components/layout/navbar.component';
+import { FooterComponent } from './components/layout/footer.component';
 import { CommandService } from './services/command.service';
 
 @Component({

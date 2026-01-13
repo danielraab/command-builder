@@ -1,5 +1,5 @@
 import { Component, input, output } from '@angular/core';
-import { Flag } from '../../models/command.model';
+import { Flag } from '../../../models/command.model';
 
 @Component({
   selector: 'app-flag-item',

@@ -1,6 +1,6 @@
 import { Component, input, signal, computed, inject, effect } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { CommandService, CommandHistoryEntry } from '../../services/command.service';
+import { CommandService, CommandHistoryEntry } from '../services/command.service';
 
 @Component({
   selector: 'app-command-history',

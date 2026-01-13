@@ -28,11 +28,6 @@ A modern Angular application that helps you build complex shell commands through
 - Stored in browser's localStorage
 - Timestamp tracking with relative time display
 
-🎨 **Modern UI**
-- Built with Tailwind CSS
-- Responsive design
-- Accessible interface (WCAG AA compliant)
-
 ## Project Structure
 
 ```
@@ -135,6 +130,10 @@ Build the project for production:
 ```bash
 npm run build
 ```
+
+### Docker Deployment
+
+For Docker deployment instructions, see the [Docker README](docker/README.md).
 
 ## Usage
 

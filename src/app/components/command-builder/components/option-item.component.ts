@@ -1,6 +1,6 @@
 import { Component, input, output } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { Option } from '../../models/command.model';
+import { Option } from '../../../models/command.model';
 
 @Component({
   selector: 'app-option-item',
