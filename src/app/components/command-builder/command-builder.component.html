@@ -1,0 +1,91 @@
+@if (isLoading()) {
+  <app-loading-spinner />
+} @else if (command(); as cmd) {
+  <div class="container mx-auto px-4 py-8 max-w-6xl">
+    <app-command-header [command]="cmd" />
+
+    <app-generated-command-display [command]="generatedCommand()" />
+
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+      <!-- Left Column: Flags and Options -->
+      <div class="lg:col-span-2 space-y-6">
+        @if (cmd.flags.length > 0) {
+          <div class="bg-white rounded-lg shadow-md p-6">
+            <h2 class="text-2xl font-bold mb-4">Flags</h2>
+            <div class="space-y-3">
+              @for (flag of cmd.flags; track flag.id) {
+                <app-flag-item
+                  [flag]="flag"
+                  [selected]="getFlagState(flag.id)"
+                  (toggle)="toggleFlag(flag.id)"
+                />
+              }
+            </div>
+          </div>
+        }
+
+        @if (cmd.options.length > 0) {
+          <div class="bg-white rounded-lg shadow-md p-6">
+            <h2 class="text-2xl font-bold mb-4">Options</h2>
+            <div class="space-y-4">
+              @for (option of cmd.options; track option.id) {
+                <app-option-item
+                  [option]="option"
+                  [selected]="getOptionState(option.id).selected"
+                  [value]="getOptionState(option.id).value"
+                  (toggle)="toggleOption(option.id)"
+                  (valueChange)="updateOptionValue(option.id, $event)"
+                />
+              }
+            </div>
+          </div>
+        }
+      </div>
+
+      <!-- Right Column: Examples and Actions -->
+      <div class="space-y-6">
+        @if (cmd.examples && cmd.examples.length > 0) {
+          <div class="bg-white rounded-lg shadow-md p-6">
+            <h2 class="text-xl font-bold mb-4">Examples</h2>
+            <div class="space-y-4">
+              @for (example of cmd.examples; track example.command) {
+                <app-example-card
+                  [example]="example"
+                  (apply)="applyExample(example)"
+                />
+              }
+            </div>
+          </div>
+        }
+
+        <div class="bg-white rounded-lg shadow-md p-6">
+          <button
+            (click)="saveCommand()"
+            class="w-full px-4 py-3 bg-green-600 hover:bg-green-700 text-white font-semibold rounded-md transition-colors mb-2"
+            [attr.aria-label]="'Save command to history'"
+          >
+            {{ saveButtonText() }}
+          </button>
+          <button
+            (click)="resetCommand()"
+            class="w-full px-4 py-3 bg-gray-600 hover:bg-gray-700 text-white font-semibold rounded-md transition-colors"
+            [attr.aria-label]="'Reset command to default'"
+          >
+            Reset
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <div class="mt-6">
+      <app-command-history [commandId]="cmd.id" />
+    </div>
+  </div>
+} @else {
+  <div class="container mx-auto px-4 py-8">
+    <div class="bg-white rounded-lg shadow-md p-6 text-center">
+      <h2 class="text-2xl font-bold text-gray-800">Command not found</h2>
+      <p class="text-gray-600 mt-2">Please select a command from the navigation bar.</p>
+    </div>
+  </div>
+}
