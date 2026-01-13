@@ -56,7 +56,7 @@ export class HomeComponent implements OnInit {
   private commandService = inject(CommandService);
   private titleService = inject(Title);
   
-  commands = computed(() => this.commandService.commands());
+  commands = computed(() => this.commandService.getFlatCommands());
 
   ngOnInit(): void {
     this.titleService.setTitle('Command Builder');

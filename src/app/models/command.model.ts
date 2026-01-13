@@ -52,6 +52,23 @@ export interface Command {
   examples?: Example[];
 }
 
+export interface CommandGroup {
+  id: string;
+  name: string;
+  description?: string;
+  items: (Command | CommandGroup)[];
+}
+
+export type MenuItem = Command | CommandGroup;
+
+export function isCommand(item: MenuItem): item is Command {
+  return 'flags' in item || 'options' in item;
+}
+
+export function isCommandGroup(item: MenuItem): item is CommandGroup {
+  return 'items' in item;
+}
+
 export interface CommandData {
-  commands: Command[];
+  commands: MenuItem[];
 }

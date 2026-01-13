@@ -1,6 +1,6 @@
 import { Injectable, signal, computed, inject, PLATFORM_ID } from '@angular/core';
 import { isPlatformBrowser } from '@angular/common';
-import { Command, CommandData } from '../models/command.model';
+import { Command, CommandData, MenuItem, isCommand, isCommandGroup } from '../models/command.model';
 
 export interface CommandHistoryEntry {
   command: string;
@@ -13,7 +13,8 @@ export interface CommandHistoryEntry {
 export class CommandService {
   private platformId = inject(PLATFORM_ID);
   
-  private commandsData = signal<Command[]>([]);
+  private commandsData = signal<MenuItem[]>([]);
+  private flatCommands = computed(() => this.flattenCommands(this.commandsData()));
   
   commands = computed(() => this.commandsData());
   
@@ -36,9 +37,30 @@ export class CommandService {
       this.commandsData.set([]);
     }
   }
+
+  private flattenCommands(items: MenuItem[]): Command[] {
+    const result: Command[] = [];
+    
+    const flatten = (items: MenuItem[]) => {
+      for (const item of items) {
+        if (isCommand(item)) {
+          result.push(item);
+        } else if (isCommandGroup(item)) {
+          flatten(item.items);
+        }
+      }
+    };
+    
+    flatten(items);
+    return result;
+  }
   
   getCommand(id: string): Command | undefined {
-    return this.commandsData().find(cmd => cmd.id === id);
+    return this.flatCommands().find(cmd => cmd.id === id);
+  }
+
+  getFlatCommands(): Command[] {
+    return this.flatCommands();
   }
   
   saveToHistory(commandId: string, commandString: string): void {

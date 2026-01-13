@@ -15,14 +15,32 @@
 
       <!-- Desktop Navigation -->
       <div class="hidden md:flex md:items-center md:space-x-1">
-        @for (command of commands(); track command.id) {
-          <a
-            [routerLink]="['/command', command.id]"
-            routerLinkActive="bg-gray-900"
-            class="px-4 py-2 rounded-md hover:bg-gray-700 transition-colors font-mono text-sm whitespace-nowrap"
-          >
-            {{ command.name }}
-          </a>
+        @for (item of commands(); track item.id) {
+          @if (isCommand(item)) {
+            <a
+              [routerLink]="['/command', item.id]"
+              routerLinkActive="bg-gray-900"
+              class="px-4 py-2 rounded-md hover:bg-gray-700 transition-colors font-mono text-sm whitespace-nowrap"
+            >
+              {{ item.name }}
+            </a>
+          } @else if (isCommandGroup(item)) {
+            <div class="relative group">
+              <button
+                type="button"
+                class="px-4 py-2 rounded-md hover:bg-gray-700 transition-colors font-mono text-sm whitespace-nowrap flex items-center gap-1"
+                [attr.aria-label]="'Toggle ' + item.name + ' menu'"
+              >
+                {{ item.name }}
+                <svg class="w-4 h-4 group-hover:rotate-180 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 14l-7 7m0 0l-7-7m7 7V3" />
+                </svg>
+              </button>
+              <div class="absolute left-0 mt-0 w-48 bg-gray-900 rounded-md shadow-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50">
+                <ng-container *ngTemplateOutlet="submenuTemplate; context: { items: item.items, level: 0 }"></ng-container>
+              </div>
+            </div>
+          }
         }
       </div>
 
@@ -48,18 +66,112 @@
     @if (isMenuOpen()) {
       <div class="md:hidden pb-4">
         <div class="flex flex-col space-y-1">
-          @for (command of commands(); track command.id) {
-            <a
-              [routerLink]="['/command', command.id]"
-              routerLinkActive="bg-gray-900"
-              class="px-4 py-2 rounded-md hover:bg-gray-700 transition-colors font-mono text-sm"
-              (click)="closeMenu()"
-            >
-              {{ command.name }}
-            </a>
+          @for (item of commands(); track item.id) {
+            @if (isCommand(item)) {
+              <a
+                [routerLink]="['/command', item.id]"
+                routerLinkActive="bg-gray-900"
+                class="px-4 py-2 rounded-md hover:bg-gray-700 transition-colors font-mono text-sm"
+                (click)="closeMenu()"
+              >
+                {{ item.name }}
+              </a>
+            } @else if (isCommandGroup(item)) {
+              <div>
+                <button
+                  type="button"
+                  (click)="toggleSubmenu(item.id)"
+                  class="w-full text-left px-4 py-2 rounded-md hover:bg-gray-700 transition-colors font-mono text-sm flex items-center justify-between"
+                  [attr.aria-expanded]="isSubmenuOpen(item.id)"
+                  [attr.aria-label]="'Toggle ' + item.name + ' menu'"
+                >
+                  {{ item.name }}
+                  <svg class="w-4 h-4" [class.rotate-180]="isSubmenuOpen(item.id)" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 14l-7 7m0 0l-7-7m7 7V3" />
+                  </svg>
+                </button>
+                @if (isSubmenuOpen(item.id)) {
+                  <div class="bg-gray-700 rounded-md overflow-hidden">
+                    <ng-container *ngTemplateOutlet="mobileSubmenuTemplate; context: { items: item.items, level: 1 }"></ng-container>
+                  </div>
+                }
+              </div>
+            }
           }
         </div>
       </div>
     }
   </div>
 </nav>
+
+<ng-template #submenuTemplate let-items="items" let-level="level">
+  @for (item of items; track item.id) {
+    @if (isCommand(item)) {
+      <a
+        [routerLink]="['/command', item.id]"
+        routerLinkActive="bg-gray-950"
+        class="block px-4 py-2 hover:bg-gray-800 transition-colors font-mono text-sm text-gray-100"
+        (click)="closeMenu()"
+        [style.padding-left]="(16 + level * 16) + 'px'"
+      >
+        {{ item.name }}
+      </a>
+    } @else if (isCommandGroup(item)) {
+      <div class="relative" [attr.data-submenu-id]="item.id" (mouseenter)="onSubmenuMouseEnter(item.id)" (mouseleave)="onSubmenuMouseLeave()">
+        <button
+          type="button"
+          class="w-full text-left px-4 py-2 hover:bg-gray-800 transition-colors font-mono text-sm text-gray-100 flex items-center justify-between"
+          [style.padding-left]="(16 + level * 16) + 'px'"
+          [attr.aria-label]="'Toggle ' + item.name + ' submenu'"
+        >
+          <span>{{ item.name }}</span>
+          <svg class="w-4 h-4 transition-transform" [class.translate-x-1]="isSubmenuHovered(item.id)" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+          </svg>
+        </button>
+        @if (isSubmenuHovered(item.id)) {
+          <div [ngClass]="getSubmenuPosition(item.id) === 'left' ? 'right-full' : 'left-full'" class="absolute top-0 mt-0 w-48 bg-gray-900 rounded-md shadow-lg transition-all duration-200 z-50">
+            <ng-container *ngTemplateOutlet="submenuTemplate; context: { items: item.items, level: level + 1 }"></ng-container>
+          </div>
+        }
+      </div>
+    }
+  }
+</ng-template>
+
+<ng-template #mobileSubmenuTemplate let-items="items" let-level="level">
+  @for (item of items; track item.id) {
+    @if (isCommand(item)) {
+      <a
+        [routerLink]="['/command', item.id]"
+        routerLinkActive="bg-gray-900"
+        class="block px-4 py-2 hover:bg-gray-600 transition-colors font-mono text-sm text-gray-100"
+        (click)="closeMenu()"
+        [style.padding-left]="(16 + level * 16) + 'px'"
+      >
+        {{ item.name }}
+      </a>
+    } @else if (isCommandGroup(item)) {
+      <div>
+        <button
+          type="button"
+          (click)="toggleSubmenu(item.id)"
+          class="w-full text-left px-4 py-2 hover:bg-gray-600 transition-colors font-mono text-sm text-gray-100 flex items-center justify-between"
+          [style.padding-left]="(16 + level * 16) + 'px'"
+          [attr.aria-expanded]="isSubmenuOpen(item.id)"
+          [attr.aria-label]="'Toggle ' + item.name + ' submenu'"
+        >
+          <span>{{ item.name }}</span>
+          <svg class="w-4 h-4 transition-transform" [class.rotate-180]="isSubmenuOpen(item.id)" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 14l-7 7m0 0l-7-7m7 7V3" />
+          </svg>
+        </button>
+        @if (isSubmenuOpen(item.id)) {
+          <div class="bg-gray-600 rounded-md overflow-hidden">
+            <ng-container *ngTemplateOutlet="mobileSubmenuTemplate; context: { items: item.items, level: level + 1 }"></ng-container>
+          </div>
+        }
+      </div>
+    }
+  }
+</ng-template>

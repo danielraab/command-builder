@@ -691,411 +691,627 @@
       ]
     },
     {
-      "id": "rsync",
-      "name": "rsync",
-      "description": "Fast, versatile file copying tool for local and remote synchronization",
-      "link": "https://man7.org/linux/man-pages/man1/rsync.1.html",
-      "flags": [
+      "id": "file-operations",
+      "name": "File Operations",
+      "description": "Commands for file and directory manipulation",
+      "items": [
         {
-          "id": "archive",
-          "flag": "-a",
-          "description": "Archive mode; equals -rlptgoD (recursive, links, perms, times, group, owner, devices)",
-          "selected": true
-        },
-        {
-          "id": "verbose",
-          "flag": "-v",
-          "description": "Increase verbosity",
-          "selected": true
-        },
-        {
-          "id": "compress",
-          "flag": "-z",
-          "description": "Compress file data during the transfer",
-          "selected": false
-        },
-        {
-          "id": "progress",
-          "flag": "--progress",
-          "description": "Show progress during transfer",
-          "selected": true
-        },
-        {
-          "id": "dry-run",
-          "flag": "-n",
-          "description": "Perform a trial run with no changes made",
-          "selected": false
-        },
-        {
-          "id": "delete",
-          "flag": "--delete",
-          "description": "Delete extraneous files from destination dirs",
-          "selected": false
-        },
-        {
-          "id": "recursive",
-          "flag": "-r",
-          "description": "Recurse into directories",
-          "selected": false
-        },
-        {
-          "id": "update",
-          "flag": "-u",
-          "description": "Skip files that are newer on the receiver",
-          "selected": false
-        },
-        {
-          "id": "partial",
-          "flag": "--partial",
-          "description": "Keep partially transferred files",
-          "selected": false
-        },
-        {
-          "id": "human-readable",
-          "flag": "-h",
-          "description": "Output numbers in a human-readable format",
-          "selected": false
-        }
-      ],
-      "options": [
-        {
-          "id": "exclude",
-          "option": "--exclude",
-          "description": "Exclude files matching pattern",
-          "selected": false,
-          "parameter": {
-            "type": "text",
-            "placeholder": "*.tmp"
-          }
-        },
-        {
-          "id": "include",
-          "option": "--include",
-          "description": "Include files matching pattern",
-          "selected": false,
-          "parameter": {
-            "type": "text",
-            "placeholder": "*.txt"
-          }
-        },
-        {
-          "id": "bwlimit",
-          "option": "--bwlimit",
-          "description": "Limit bandwidth (KB/s)",
-          "selected": false,
-          "parameter": {
-            "type": "number",
-            "placeholder": "1000"
-          }
-        },
-        {
-          "id": "chmod",
-          "option": "--chmod",
-          "description": "Affect file and/or directory permissions",
-          "selected": false,
-          "parameter": {
-            "type": "text",
-            "placeholder": "755"
-          }
-        },
-        {
-          "id": "ssh-port",
-          "option": "-e",
-          "description": "Specify an alternative remote shell program",
-          "selected": false,
-          "parameter": {
-            "type": "text",
-            "placeholder": "ssh -p 2222"
-          }
-        },
-        {
-          "id": "source",
-          "option": "",
-          "description": "Source file or directory",
-          "selected": true,
-          "parameter": {
-            "type": "text",
-            "placeholder": "/path/to/source"
-          }
-        },
-        {
-          "id": "destination",
-          "option": "",
-          "description": "Destination file or directory",
-          "selected": true,
-          "parameter": {
-            "type": "text",
-            "placeholder": "/path/to/destination"
-          }
-        }
-      ],
-      "examples": [
-        {
-          "command": "rsync -avh --progress /source/ /destination/",
-          "description": "Sync source to destination with archive mode, verbose output, human-readable sizes, and progress",
-          "presets": {
-            "archive": {
-              "selected": true
+          "id": "cp",
+          "name": "cp",
+          "description": "Copy files and directories",
+          "link": "https://man7.org/linux/man-pages/man1/cp.1.html",
+          "flags": [
+            {
+              "id": "recursive",
+              "flag": "-r",
+              "description": "Copy directories recursively",
+              "selected": false
             },
-            "verbose": {
-              "selected": true
+            {
+              "id": "interactive",
+              "flag": "-i",
+              "description": "Ask before overwriting files",
+              "selected": false
             },
-            "human-readable": {
-              "selected": true
-            },
-            "progress": {
-              "selected": true
-            },
-            "source": {
-              "selected": true,
-              "value": "/source/"
-            },
-            "destination": {
-              "selected": true,
-              "value": "/destination/"
+            {
+              "id": "verbose",
+              "flag": "-v",
+              "description": "Explain what is being done",
+              "selected": false
             }
-          }
+          ],
+          "options": [
+            {
+              "id": "source",
+              "option": "",
+              "description": "Source file or directory",
+              "selected": true,
+              "parameter": {
+                "type": "text",
+                "placeholder": "/path/to/source"
+              }
+            },
+            {
+              "id": "destination",
+              "option": "",
+              "description": "Destination file or directory",
+              "selected": true,
+              "parameter": {
+                "type": "text",
+                "placeholder": "/path/to/destination"
+              }
+            }
+          ]
         },
         {
-          "command": "rsync -avz --delete user@remote:/data/ /local/backup/",
-          "description": "Sync from remote server with compression and delete extra files",
-          "presets": {
-            "archive": {
-              "selected": true
+          "id": "mv",
+          "name": "mv",
+          "description": "Move or rename files and directories",
+          "link": "https://man7.org/linux/man-pages/man1/mv.1.html",
+          "flags": [
+            {
+              "id": "interactive",
+              "flag": "-i",
+              "description": "Ask before overwriting files",
+              "selected": false
             },
-            "verbose": {
-              "selected": true
-            },
-            "compress": {
-              "selected": true
-            },
-            "delete": {
-              "selected": true
-            },
-            "source": {
-              "selected": true,
-              "value": "user@remote:/data/"
-            },
-            "destination": {
-              "selected": true,
-              "value": "/local/backup/"
+            {
+              "id": "verbose",
+              "flag": "-v",
+              "description": "Explain what is being done",
+              "selected": false
             }
-          }
+          ],
+          "options": [
+            {
+              "id": "source",
+              "option": "",
+              "description": "Source file or directory",
+              "selected": true,
+              "parameter": {
+                "type": "text",
+                "placeholder": "/path/to/source"
+              }
+            },
+            {
+              "id": "destination",
+              "option": "",
+              "description": "Destination file or directory",
+              "selected": true,
+              "parameter": {
+                "type": "text",
+                "placeholder": "/path/to/destination"
+              }
+            }
+          ]
         },
         {
-          "command": "rsync -avn --exclude='*.log' /source/ /destination/",
-          "description": "Dry run sync excluding log files",
-          "presets": {
-            "archive": {
+          "id": "rsync",
+          "name": "rsync",
+          "description": "Fast, versatile file copying tool for local and remote synchronization",
+          "link": "https://man7.org/linux/man-pages/man1/rsync.1.html",
+          "flags": [
+            {
+              "id": "archive",
+              "flag": "-a",
+              "description": "Archive mode; equals -rlptgoD (recursive, links, perms, times, group, owner, devices)",
               "selected": true
             },
-            "verbose": {
+            {
+              "id": "verbose",
+              "flag": "-v",
+              "description": "Increase verbosity",
               "selected": true
             },
-            "dry-run": {
+            {
+              "id": "compress",
+              "flag": "-z",
+              "description": "Compress file data during the transfer",
+              "selected": false
+            },
+            {
+              "id": "progress",
+              "flag": "--progress",
+              "description": "Show progress during transfer",
               "selected": true
             },
-            "exclude": {
-              "selected": true,
-              "value": "*.log"
+            {
+              "id": "dry-run",
+              "flag": "-n",
+              "description": "Perform a trial run with no changes made",
+              "selected": false
             },
-            "source": {
-              "selected": true,
-              "value": "/source/"
+            {
+              "id": "delete",
+              "flag": "--delete",
+              "description": "Delete extraneous files from destination dirs",
+              "selected": false
             },
-            "destination": {
-              "selected": true,
-              "value": "/destination/"
+            {
+              "id": "recursive",
+              "flag": "-r",
+              "description": "Recurse into directories",
+              "selected": false
+            },
+            {
+              "id": "update",
+              "flag": "-u",
+              "description": "Skip files that are newer on the receiver",
+              "selected": false
+            },
+            {
+              "id": "partial",
+              "flag": "--partial",
+              "description": "Keep partially transferred files",
+              "selected": false
+            },
+            {
+              "id": "human-readable",
+              "flag": "-h",
+              "description": "Output numbers in a human-readable format",
+              "selected": false
             }
-          }
+          ],
+          "options": [
+            {
+              "id": "exclude",
+              "option": "--exclude",
+              "description": "Exclude files matching pattern",
+              "selected": false,
+              "parameter": {
+                "type": "text",
+                "placeholder": "*.tmp"
+              }
+            },
+            {
+              "id": "include",
+              "option": "--include",
+              "description": "Include files matching pattern",
+              "selected": false,
+              "parameter": {
+                "type": "text",
+                "placeholder": "*.txt"
+              }
+            },
+            {
+              "id": "bwlimit",
+              "option": "--bwlimit",
+              "description": "Limit bandwidth (KB/s)",
+              "selected": false,
+              "parameter": {
+                "type": "number",
+                "placeholder": "1000"
+              }
+            },
+            {
+              "id": "chmod",
+              "option": "--chmod",
+              "description": "Affect file and/or directory permissions",
+              "selected": false,
+              "parameter": {
+                "type": "text",
+                "placeholder": "755"
+              }
+            },
+            {
+              "id": "ssh-port",
+              "option": "-e",
+              "description": "Specify an alternative remote shell program",
+              "selected": false,
+              "parameter": {
+                "type": "text",
+                "placeholder": "ssh -p 2222"
+              }
+            },
+            {
+              "id": "source",
+              "option": "",
+              "description": "Source file or directory",
+              "selected": true,
+              "parameter": {
+                "type": "text",
+                "placeholder": "/path/to/source"
+              }
+            },
+            {
+              "id": "destination",
+              "option": "",
+              "description": "Destination file or directory",
+              "selected": true,
+              "parameter": {
+                "type": "text",
+                "placeholder": "/path/to/destination"
+              }
+            }
+          ],
+          "examples": [
+            {
+              "command": "rsync -avh --progress /source/ /destination/",
+              "description": "Sync source to destination with archive mode, verbose output, human-readable sizes, and progress",
+              "presets": {
+                "archive": {
+                  "selected": true
+                },
+                "verbose": {
+                  "selected": true
+                },
+                "human-readable": {
+                  "selected": true
+                },
+                "progress": {
+                  "selected": true
+                },
+                "source": {
+                  "selected": true,
+                  "value": "/source/"
+                },
+                "destination": {
+                  "selected": true,
+                  "value": "/destination/"
+                }
+              }
+            },
+            {
+              "command": "rsync -avz --delete user@remote:/data/ /local/backup/",
+              "description": "Sync from remote server with compression and delete extra files",
+              "presets": {
+                "archive": {
+                  "selected": true
+                },
+                "verbose": {
+                  "selected": true
+                },
+                "compress": {
+                  "selected": true
+                },
+                "delete": {
+                  "selected": true
+                },
+                "source": {
+                  "selected": true,
+                  "value": "user@remote:/data/"
+                },
+                "destination": {
+                  "selected": true,
+                  "value": "/local/backup/"
+                }
+              }
+            },
+            {
+              "command": "rsync -avn --exclude='*.log' /source/ /destination/",
+              "description": "Dry run sync excluding log files",
+              "presets": {
+                "archive": {
+                  "selected": true
+                },
+                "verbose": {
+                  "selected": true
+                },
+                "dry-run": {
+                  "selected": true
+                },
+                "exclude": {
+                  "selected": true,
+                  "value": "*.log"
+                },
+                "source": {
+                  "selected": true,
+                  "value": "/source/"
+                },
+                "destination": {
+                  "selected": true,
+                  "value": "/destination/"
+                }
+              }
+            }
+          ]
+        },
+        {
+          "id": "tar",
+          "name": "tar",
+          "description": "Archive utility - create, extract, and manipulate tar archives",
+          "link": "https://www.gnu.org/software/tar/manual/tar.html",
+          "flags": [
+            {
+              "id": "create",
+              "flag": "-c",
+              "description": "Create a new archive",
+              "selected": true
+            },
+            {
+              "id": "extract",
+              "flag": "-x",
+              "description": "Extract files from an archive",
+              "selected": false
+            },
+            {
+              "id": "list",
+              "flag": "-t",
+              "description": "List the contents of an archive",
+              "selected": false
+            },
+            {
+              "id": "verbose",
+              "flag": "-v",
+              "description": "Verbosely list files processed",
+              "selected": true
+            },
+            {
+              "id": "gzip",
+              "flag": "-z",
+              "description": "Filter the archive through gzip (.tar.gz)",
+              "selected": false
+            },
+            {
+              "id": "bzip2",
+              "flag": "-j",
+              "description": "Filter the archive through bzip2 (.tar.bz2)",
+              "selected": false
+            },
+            {
+              "id": "xz",
+              "flag": "-J",
+              "description": "Filter the archive through xz (.tar.xz)",
+              "selected": false
+            },
+            {
+              "id": "preserve-permissions",
+              "flag": "-p",
+              "description": "Preserve permissions when extracting",
+              "selected": false
+            },
+            {
+              "id": "dereference",
+              "flag": "-h",
+              "description": "Follow symbolic links",
+              "selected": false
+            }
+          ],
+          "options": [
+            {
+              "id": "file",
+              "option": "-f",
+              "description": "Archive file name",
+              "selected": true,
+              "parameter": {
+                "type": "text",
+                "placeholder": "archive.tar"
+              }
+            },
+            {
+              "id": "directory",
+              "option": "-C",
+              "description": "Change to directory before performing operations",
+              "selected": false,
+              "parameter": {
+                "type": "text",
+                "placeholder": "/path/to/dir"
+              }
+            },
+            {
+              "id": "exclude",
+              "option": "--exclude",
+              "description": "Exclude files matching pattern",
+              "selected": false,
+              "parameter": {
+                "type": "text",
+                "placeholder": "*.log"
+              }
+            },
+            {
+              "id": "strip-components",
+              "option": "--strip-components",
+              "description": "Strip NUMBER leading components from file names on extraction",
+              "selected": false,
+              "parameter": {
+                "type": "number",
+                "placeholder": "1"
+              }
+            },
+            {
+              "id": "files",
+              "option": "",
+              "description": "Files or directories to archive/extract",
+              "selected": false,
+              "parameter": {
+                "type": "text",
+                "placeholder": "file1 file2 dir/"
+              }
+            }
+          ],
+          "examples": [
+            {
+              "command": "tar -czf archive.tar.gz folder/",
+              "description": "Create a gzip compressed tar archive of a folder",
+              "presets": {
+                "create": {
+                  "selected": true
+                },
+                "gzip": {
+                  "selected": true
+                },
+                "file": {
+                  "selected": true,
+                  "value": "archive.tar.gz"
+                },
+                "files": {
+                  "selected": true,
+                  "value": "folder/"
+                }
+              }
+            },
+            {
+              "command": "tar -xzf archive.tar.gz",
+              "description": "Extract a gzip compressed tar archive",
+              "presets": {
+                "extract": {
+                  "selected": true
+                },
+                "gzip": {
+                  "selected": true
+                },
+                "file": {
+                  "selected": true,
+                  "value": "archive.tar.gz"
+                }
+              }
+            },
+            {
+              "command": "tar -tvf archive.tar",
+              "description": "List contents of a tar archive",
+              "presets": {
+                "list": {
+                  "selected": true
+                },
+                "verbose": {
+                  "selected": true
+                },
+                "file": {
+                  "selected": true,
+                  "value": "archive.tar"
+                }
+              }
+            },
+            {
+              "command": "tar -xzf archive.tar.gz -C /destination/",
+              "description": "Extract archive to a specific directory",
+              "presets": {
+                "extract": {
+                  "selected": true
+                },
+                "gzip": {
+                  "selected": true
+                },
+                "file": {
+                  "selected": true,
+                  "value": "archive.tar.gz"
+                },
+                "directory": {
+                  "selected": true,
+                  "value": "/destination/"
+                }
+              }
+            }
+          ]
         }
       ]
     },
     {
-      "id": "tar",
-      "name": "tar",
-      "description": "Archive utility - create, extract, and manipulate tar archives",
-      "link": "https://www.gnu.org/software/tar/manual/tar.html",
-      "flags": [
+      "id": "text-processing",
+      "name": "Text Processing",
+      "description": "Tools for text manipulation and analysis",
+      "items": [
         {
-          "id": "create",
-          "flag": "-c",
-          "description": "Create a new archive",
-          "selected": true
-        },
-        {
-          "id": "extract",
-          "flag": "-x",
-          "description": "Extract files from an archive",
-          "selected": false
-        },
-        {
-          "id": "list",
-          "flag": "-t",
-          "description": "List the contents of an archive",
-          "selected": false
-        },
-        {
-          "id": "verbose",
-          "flag": "-v",
-          "description": "Verbosely list files processed",
-          "selected": true
-        },
-        {
-          "id": "gzip",
-          "flag": "-z",
-          "description": "Filter the archive through gzip (.tar.gz)",
-          "selected": false
-        },
-        {
-          "id": "bzip2",
-          "flag": "-j",
-          "description": "Filter the archive through bzip2 (.tar.bz2)",
-          "selected": false
-        },
-        {
-          "id": "xz",
-          "flag": "-J",
-          "description": "Filter the archive through xz (.tar.xz)",
-          "selected": false
-        },
-        {
-          "id": "preserve-permissions",
-          "flag": "-p",
-          "description": "Preserve permissions when extracting",
-          "selected": false
-        },
-        {
-          "id": "dereference",
-          "flag": "-h",
-          "description": "Follow symbolic links",
-          "selected": false
-        }
-      ],
-      "options": [
-        {
-          "id": "file",
-          "option": "-f",
-          "description": "Archive file name",
-          "selected": true,
-          "parameter": {
-            "type": "text",
-            "placeholder": "archive.tar"
-          }
-        },
-        {
-          "id": "directory",
-          "option": "-C",
-          "description": "Change to directory before performing operations",
-          "selected": false,
-          "parameter": {
-            "type": "text",
-            "placeholder": "/path/to/dir"
-          }
-        },
-        {
-          "id": "exclude",
-          "option": "--exclude",
-          "description": "Exclude files matching pattern",
-          "selected": false,
-          "parameter": {
-            "type": "text",
-            "placeholder": "*.log"
-          }
-        },
-        {
-          "id": "strip-components",
-          "option": "--strip-components",
-          "description": "Strip NUMBER leading components from file names on extraction",
-          "selected": false,
-          "parameter": {
-            "type": "number",
-            "placeholder": "1"
-          }
-        },
-        {
-          "id": "files",
-          "option": "",
-          "description": "Files or directories to archive/extract",
-          "selected": false,
-          "parameter": {
-            "type": "text",
-            "placeholder": "file1 file2 dir/"
-          }
-        }
-      ],
-      "examples": [
-        {
-          "command": "tar -czf archive.tar.gz folder/",
-          "description": "Create a gzip compressed tar archive of a folder",
-          "presets": {
-            "create": {
-              "selected": true
+          "id": "sed",
+          "name": "sed",
+          "description": "Stream editor for filtering and transforming text",
+          "link": "https://man7.org/linux/man-pages/man1/sed.1.html",
+          "flags": [
+            {
+              "id": "in-place",
+              "flag": "-i",
+              "description": "Edit files in-place",
+              "selected": false
             },
-            "gzip": {
-              "selected": true
-            },
-            "file": {
-              "selected": true,
-              "value": "archive.tar.gz"
-            },
-            "files": {
-              "selected": true,
-              "value": "folder/"
+            {
+              "id": "extended-regex",
+              "flag": "-E",
+              "description": "Use extended regular expressions",
+              "selected": false
             }
-          }
+          ],
+          "options": [
+            {
+              "id": "script",
+              "option": "-e",
+              "description": "Sed script to execute",
+              "selected": true,
+              "parameter": {
+                "type": "text",
+                "placeholder": "s/old/new/g"
+              }
+            }
+          ]
         },
         {
-          "command": "tar -xzf archive.tar.gz",
-          "description": "Extract a gzip compressed tar archive",
-          "presets": {
-            "extract": {
-              "selected": true
-            },
-            "gzip": {
-              "selected": true
-            },
-            "file": {
+          "id": "awk",
+          "name": "awk",
+          "description": "Pattern scanning and processing language",
+          "link": "https://man7.org/linux/man-pages/man1/awk.1p.html",
+          "flags": [],
+          "options": [
+            {
+              "id": "program",
+              "option": "",
+              "description": "AWK program",
               "selected": true,
-              "value": "archive.tar.gz"
+              "parameter": {
+                "type": "text",
+                "placeholder": "{print $1}"
+              }
             }
-          }
+          ]
         },
         {
-          "command": "tar -tvf archive.tar",
-          "description": "List contents of a tar archive",
-          "presets": {
-            "list": {
-              "selected": true
+          "id": "text-utils",
+          "name": "Text Utilities",
+          "description": "Additional text processing tools",
+          "items": [
+            {
+              "id": "sort",
+              "name": "sort",
+              "description": "Sort lines of text files",
+              "link": "https://man7.org/linux/man-pages/man1/sort.1.html",
+              "flags": [
+                {
+                  "id": "numeric-sort",
+                  "flag": "-n",
+                  "description": "Compare according to string numerical value",
+                  "selected": false
+                },
+                {
+                  "id": "reverse",
+                  "flag": "-r",
+                  "description": "Reverse the result of comparisons",
+                  "selected": false
+                },
+                {
+                  "id": "unique",
+                  "flag": "-u",
+                  "description": "Output only the first of an equal run",
+                  "selected": false
+                }
+              ],
+              "options": []
             },
-            "verbose": {
-              "selected": true
-            },
-            "file": {
-              "selected": true,
-              "value": "archive.tar"
+            {
+              "id": "wc",
+              "name": "wc",
+              "description": "Print newline, word, and byte counts",
+              "link": "https://man7.org/linux/man-pages/man1/wc.1.html",
+              "flags": [
+                {
+                  "id": "lines",
+                  "flag": "-l",
+                  "description": "Print only the newline counts",
+                  "selected": false
+                },
+                {
+                  "id": "words",
+                  "flag": "-w",
+                  "description": "Print only the word counts",
+                  "selected": false
+                },
+                {
+                  "id": "bytes",
+                  "flag": "-c",
+                  "description": "Print only the byte counts",
+                  "selected": false
+                }
+              ],
+              "options": []
             }
-          }
-        },
-        {
-          "command": "tar -xzf archive.tar.gz -C /destination/",
-          "description": "Extract archive to a specific directory",
-          "presets": {
-            "extract": {
-              "selected": true
-            },
-            "gzip": {
-              "selected": true
-            },
-            "file": {
-              "selected": true,
-              "value": "archive.tar.gz"
-            },
-            "directory": {
-              "selected": true,
-              "value": "/destination/"
-            }
-          }
+          ]
         }
       ]
     }
