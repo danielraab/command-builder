@@ -1,5 +1,4 @@
 import { Injectable, signal, computed, inject, PLATFORM_ID } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
 import { isPlatformBrowser } from '@angular/common';
 import { Command, CommandData } from '../models/command.model';
 
@@ -12,7 +11,6 @@ export interface CommandHistoryEntry {
   providedIn: 'root'
 })
 export class CommandService {
-  private http = inject(HttpClient);
   private platformId = inject(PLATFORM_ID);
   
   private commandsData = signal<Command[]>([]);
@@ -20,13 +18,16 @@ export class CommandService {
   commands = computed(() => this.commandsData());
   
   async loadCommands(): Promise<void> {
-    // Only load commands in the browser to avoid SSR issues
     if (!isPlatformBrowser(this.platformId)) {
       return;
     }
     
     try {
-      const data = await this.http.get<CommandData>('/commands.json').toPromise();
+      const response = await fetch('/commands.json');
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+      const data: CommandData = await response.json();
       if (data) {
         this.commandsData.set(data.commands);
       }

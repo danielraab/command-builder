@@ -1,6 +1,7 @@
-import { Component, signal, computed, effect, inject, OnInit, viewChild } from '@angular/core';
+import { Component, signal, computed, effect, inject, viewChild } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { Title } from '@angular/platform-browser';
+import { toSignal } from '@angular/core/rxjs-interop';
 import { CommandService } from '../../services/command.service';
 import { Command } from '../../models/command.model';
 import { CommandHistoryComponent } from '../command-history/command-history.component';
@@ -127,12 +128,13 @@ interface OptionState {
     }
   `
 })
-export class CommandBuilderComponent implements OnInit {
+export class CommandBuilderComponent {
   private route = inject(ActivatedRoute);
   private commandService = inject(CommandService);
   private titleService = inject(Title);
   private historyComponent = viewChild(CommandHistoryComponent);
 
+  private routeParams = toSignal(this.route.paramMap);
   command = signal<Command | undefined>(undefined);
   isLoading = signal(true);
   private flagStates = signal<Map<string, FlagState>>(new Map());
@@ -172,33 +174,28 @@ export class CommandBuilderComponent implements OnInit {
   });
 
   constructor() {
-    // Auto-save effect
     effect(() => {
-      this.generatedCommand(); // Track changes
+      this.generatedCommand();
     });
-  }
 
-  ngOnInit(): void {
-    this.route.paramMap.subscribe(async params => {
-      const id = params.get('id');
+    effect(() => {
+      const params = this.routeParams();
+      const id = params?.get('id');
+      
       if (id) {
         this.isLoading.set(true);
         this.command.set(undefined);
         
-        // Wait for commands to be loaded if they haven't been yet
-        if (this.commandService.commands().length === 0) {
-          await this.commandService.loadCommands();
-        }
-        
         const cmd = this.commandService.getCommand(id);
         this.command.set(cmd);
+        
         if (cmd) {
           this.initializeStates(cmd);
           this.titleService.setTitle(`Command Builder - ${cmd.name}`);
         }
+        
+        this.isLoading.set(false);
       }
-
-      this.isLoading.set(false);
     });
   }
 

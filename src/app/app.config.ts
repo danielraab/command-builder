@@ -1,9 +1,9 @@
-import { ApplicationConfig, InjectionToken, provideBrowserGlobalErrorListeners } from '@angular/core';
+import { ApplicationConfig, InjectionToken, provideBrowserGlobalErrorListeners, provideAppInitializer, inject } from '@angular/core';
 import { provideRouter } from '@angular/router';
-import { provideHttpClient, withFetch } from '@angular/common/http';
 
 import { routes } from './app.routes';
 import { provideClientHydration, withEventReplay } from '@angular/platform-browser';
+import { CommandService } from './services/command.service';
 import packageJson from '../../package.json';
 
 export const APP_VERSION = new InjectionToken<string>('APP_VERSION');
@@ -13,7 +13,10 @@ export const appConfig: ApplicationConfig = {
     provideBrowserGlobalErrorListeners(),
     provideRouter(routes), 
     provideClientHydration(withEventReplay()),
-    provideHttpClient(withFetch()),
-    { provide: APP_VERSION, useValue: packageJson.version }
+    { provide: APP_VERSION, useValue: packageJson.version },
+    provideAppInitializer(() => {
+      const commandService = inject(CommandService);
+      return commandService.loadCommands();
+    })
   ]
 };
