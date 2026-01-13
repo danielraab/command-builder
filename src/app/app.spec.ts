@@ -6,6 +6,12 @@ import { APP_VERSION } from './app.config';
 
 describe('App', () => {
   beforeEach(async () => {
+    // Mock fetch for commands.json
+    globalThis.fetch = vi.fn().mockResolvedValue({
+      ok: true,
+      json: async () => ({ commands: [] })
+    } as Response);
+
     await TestBed.configureTestingModule({
       imports: [App],
       providers: [

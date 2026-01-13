@@ -7,6 +7,22 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.2.0] - 2026-01-13
+
+### Added
+- Tree structure support for organizing commands hierarchically
+- Application initializer for loading commands on startup
+- vitests for all components and services
+
+### Changed
+- Extracted template code into separate files for better maintainability
+- Restructured components for improved organization
+- Optimized bundle size by using fetch API instead of HttpClient
+
+### Improved
+- Footer now auto-updates year dynamically
+- Cleaner codebase with extracted HTML from main component
+
 ## [0.1.0] - 2025-11-28
 
 ### Added
@@ -43,5 +59,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Express 5.1.0
 - Vitest 4.0.8
 
-[Unreleased]: https://github.com/danielraab/command-builder/compare/v0.1.0...HEAD
+[Unreleased]: https://github.com/danielraab/command-builder/compare/v0.2.0...HEAD
+[0.2.0]: https://github.com/danielraab/command-builder/compare/v0.1.0...v0.2.0
 [0.1.0]: https://github.com/danielraab/command-builder/releases/tag/v0.1.0
