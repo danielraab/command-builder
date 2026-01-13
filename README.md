@@ -162,52 +162,12 @@ To add a new command, edit `/public/commands.json`:
 
 ## Technology Stack
 
-- **Angular 20** - Latest version with standalone components
+- **Angular 21** - Latest version with standalone components
 - **TypeScript** - Type-safe development
 - **Tailwind CSS** - Utility-first CSS framework
 - **Signals** - Reactive state management
 - **RxJS** - For HTTP requests
 - **localStorage** - Client-side history persistence
-
-## Key Features Implementation
-
-### Reactive Command Generation
-
-The command string updates automatically using Angular signals and computed values:
-
-```typescript
-generatedCommand = computed(() => {
-  const cmd = this.command();
-  const parts: string[] = [cmd.name];
-  // Add flags and options...
-  return parts.join(' ');
-});
-```
-
-### Local Storage History
-
-Commands are saved with timestamps and limited to 20 entries per command:
-
-```typescript
-saveToHistory(commandId: string, commandString: string): void {
-  const entry = { command: commandString, timestamp: Date.now() };
-  const history = [entry, ...this.getHistory(commandId)].slice(0, 20);
-  localStorage.setItem(`command-history-${commandId}`, JSON.stringify(history));
-}
-```
-
-### Parameter Types
-
-Three parameter types are supported:
-- **Text**: Free-form text input
-- **Number**: Numeric values only
-- **Enum**: Dropdown selection from predefined values
-
-## Browser Support
-
-- Chrome/Edge (latest)
-- Firefox (latest)
-- Safari (latest)
 
 ## License
 

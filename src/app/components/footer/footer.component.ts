@@ -9,7 +9,7 @@ import { APP_VERSION } from '../../app.config';
       <div class="container mx-auto px-4 py-6">
         <div class="flex flex-col md:flex-row items-center justify-between gap-4">
           <div class="text-sm text-gray-400">
-            <span>© 2025 DRaab</span>
+            <span>© {{ currentYear }} DRaab</span>
             <span class="mx-2">•</span>
             <span>v{{ version }}</span>
           </div>
@@ -34,4 +34,5 @@ import { APP_VERSION } from '../../app.config';
 })
 export class FooterComponent {
   version = inject(APP_VERSION);
+  currentYear = new Date().getFullYear();
 }
