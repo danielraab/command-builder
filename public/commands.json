@@ -727,7 +727,7 @@
               {
                 "value": "rsa",
                 "label": "RSA",
-                "description": "RSA algorithm (widely supported; Ed25519 recommended for new keys when compatibility permits)"
+                "description": "RSA algorithm (widely supported across legacy and modern systems)"
               },
               {
                 "value": "ed25519",
