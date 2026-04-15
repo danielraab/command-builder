@@ -727,22 +727,17 @@
               {
                 "value": "rsa",
                 "label": "RSA",
-                "description": "RSA key"
+                "description": "RSA algorithm (widely supported; Ed25519 recommended for new keys when compatibility permits)"
               },
               {
                 "value": "ed25519",
                 "label": "Ed25519",
-                "description": "Ed25519 key"
+                "description": "Ed25519 algorithm (modern, secure, and fast)"
               },
               {
                 "value": "ecdsa",
                 "label": "ECDSA",
-                "description": "ECDSA key"
-              },
-              {
-                "value": "dsa",
-                "label": "DSA",
-                "description": "DSA key"
+                "description": "ECDSA algorithm (elliptic curve, compatibility-focused)"
               }
             ]
           }
@@ -778,19 +773,9 @@
           }
         },
         {
-          "id": "passphrase",
-          "option": "-N",
-          "description": "Provide new passphrase",
-          "selected": false,
-          "parameter": {
-            "type": "text",
-            "placeholder": "my-passphrase"
-          }
-        },
-        {
           "id": "kdf-rounds",
           "option": "-a",
-          "description": "Number of KDF rounds (for modern key formats)",
+          "description": "Number of KDF rounds for key derivation (applies to modern key formats; higher values increase security at the cost of performance)",
           "selected": false,
           "parameter": {
             "type": "number",
