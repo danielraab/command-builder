@@ -691,6 +691,161 @@
       ]
     },
     {
+      "id": "ssh-keygen",
+      "name": "ssh-keygen",
+      "description": "Generate, manage, and convert SSH authentication keys",
+      "link": "https://man7.org/linux/man-pages/man1/ssh-keygen.1.html",
+      "flags": [
+        {
+          "id": "quiet",
+          "flag": "-q",
+          "description": "Silence output",
+          "selected": false
+        },
+        {
+          "id": "verbose",
+          "flag": "-v",
+          "description": "Verbose mode",
+          "selected": false
+        },
+        {
+          "id": "generate-host-keys",
+          "flag": "-A",
+          "description": "Generate all default host key types",
+          "selected": false
+        }
+      ],
+      "options": [
+        {
+          "id": "algorithm",
+          "option": "-t",
+          "description": "Specify key type",
+          "selected": false,
+          "parameter": {
+            "type": "enum",
+            "enumValues": [
+              {
+                "value": "rsa",
+                "label": "RSA",
+                "description": "RSA key"
+              },
+              {
+                "value": "ed25519",
+                "label": "Ed25519",
+                "description": "Ed25519 key"
+              },
+              {
+                "value": "ecdsa",
+                "label": "ECDSA",
+                "description": "ECDSA key"
+              },
+              {
+                "value": "dsa",
+                "label": "DSA",
+                "description": "DSA key"
+              }
+            ]
+          }
+        },
+        {
+          "id": "keysize",
+          "option": "-b",
+          "description": "Specify number of bits in the key",
+          "selected": false,
+          "parameter": {
+            "type": "number",
+            "placeholder": "4096"
+          }
+        },
+        {
+          "id": "filename",
+          "option": "-f",
+          "description": "Output key file name",
+          "selected": false,
+          "parameter": {
+            "type": "text",
+            "placeholder": "$HOME/.ssh/id_rsa"
+          }
+        },
+        {
+          "id": "comment",
+          "option": "-C",
+          "description": "Provide new comment",
+          "selected": false,
+          "parameter": {
+            "type": "text",
+            "placeholder": "my@mail.com"
+          }
+        },
+        {
+          "id": "passphrase",
+          "option": "-N",
+          "description": "Provide new passphrase",
+          "selected": false,
+          "parameter": {
+            "type": "text",
+            "placeholder": "my-passphrase"
+          }
+        },
+        {
+          "id": "kdf-rounds",
+          "option": "-a",
+          "description": "Number of KDF rounds (for modern key formats)",
+          "selected": false,
+          "parameter": {
+            "type": "number",
+            "placeholder": "100"
+          }
+        }
+      ],
+      "examples": [
+        {
+          "command": "ssh-keygen -t rsa -b 4096 -C \"my@mail.com\" -f $HOME/.ssh/id_rsa",
+          "description": "Generate a 4096-bit RSA key with comment and output file",
+          "presets": {
+            "algorithm": {
+              "selected": true,
+              "value": "rsa"
+            },
+            "keysize": {
+              "selected": true,
+              "value": "4096"
+            },
+            "comment": {
+              "selected": true,
+              "value": "my@mail.com"
+            },
+            "filename": {
+              "selected": true,
+              "value": "$HOME/.ssh/id_rsa"
+            }
+          }
+        },
+        {
+          "command": "ssh-keygen -t ed25519 -a 100 -C \"work-laptop\" -f $HOME/.ssh/id_ed25519",
+          "description": "Generate an Ed25519 key with stronger KDF rounds",
+          "presets": {
+            "algorithm": {
+              "selected": true,
+              "value": "ed25519"
+            },
+            "kdf-rounds": {
+              "selected": true,
+              "value": "100"
+            },
+            "comment": {
+              "selected": true,
+              "value": "work-laptop"
+            },
+            "filename": {
+              "selected": true,
+              "value": "$HOME/.ssh/id_ed25519"
+            }
+          }
+        }
+      ]
+    },
+    {
       "id": "file-operations",
       "name": "File Operations",
       "description": "Commands for file and directory manipulation",
