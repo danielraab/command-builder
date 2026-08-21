@@ -5,5 +5,5 @@ services:
     ports:
       - "8080:80"
     volumes:
-      - ../public/commands.json:/usr/share/nginx/html/commands.json:ro
+      - ../public/data:/usr/share/nginx/html/data:ro
     restart: unless-stopped

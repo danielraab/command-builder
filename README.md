@@ -44,13 +44,14 @@ src/
 │   │   └── command.service.ts    # Service for loading commands & managing history
 │   └── app.routes.ts             # Application routing configuration
 ├── public/
-│   └── commands.json             # Command definitions (single source of truth)
+│   └── data/
+│       └── commands.json         # Command definitions (single source of truth)
 └── styles.css                    # Global styles
 ```
 
 ## Commands Configuration
 
-All command information is stored in `/public/commands.json`. This single file contains:
+All command information is stored in `/public/data/commands.json`. This single file contains:
 
 - Available commands
 - Flags and options with descriptions
@@ -152,7 +153,7 @@ For Docker deployment instructions, see the [Docker README](docker/README.md).
 
 ## Adding New Commands
 
-To add a new command, edit `/public/commands.json`:
+To add a new command, edit `/public/data/commands.json`:
 
 1. Add a new command object to the `commands` array
 2. Define the command's flags and options

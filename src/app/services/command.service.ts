@@ -24,7 +24,7 @@ export class CommandService {
     }
     
     try {
-      const response = await fetch('/commands.json');
+      const response = await fetch('/data/commands.json');
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);
       }

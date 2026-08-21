@@ -26,20 +26,20 @@ The Command Builder is a static Angular application served via nginx. It can be 
 docker run -d \
   --name command-builder \
   -p 8080:80 \
-  -v $(pwd)/public/commands.json:/usr/share/nginx/html/commands.json:ro \
+  -v $(pwd)/public/data:/usr/share/nginx/html/data:ro \
   ghcr.io/danielraab/command-builder:latest
 ```
-ensure that the `commands.json` file exists. remove the mount if you want use the commands.json from the repository (https://github.com/danielraab/command-builder/blob/master/public/commands.json).
+ensure that the `public/data` directory (containing `commands.json`) exists. remove the mount if you want use the commands.json from the repository (https://github.com/danielraab/command-builder/blob/master/public/data/commands.json).
 
 ### With Custom Commands File
 
-If you have a custom `commands.json` file in a different location:
+If you have a custom `commands.json` file in a different location, mount the directory containing it:
 
 ```bash
 docker run -d \
   --name command-builder \
   -p 8080:80 \
-  -v /path/to/your/commands.json:/usr/share/nginx/html/commands.json:ro \
+  -v /path/to/your/data:/usr/share/nginx/html/data:ro \
   ghcr.io/danielraab/command-builder:latest
 ```
 
@@ -48,7 +48,7 @@ docker run -d \
 - `-d`: Run container in detached mode (background)
 - `--name command-builder`: Assign a name to the container
 - `-p 8080:80`: Map port 80 from container to host port 8080
-- `-v`: Mount the commands.json file (`:ro` means read-only)
+- `-v`: Mount the data directory containing commands.json (`:ro` means read-only)
 - `ghcr.io/danielraab/command-builder:latest`: The image to use
 
 ## Running with Docker Compose
@@ -75,13 +75,13 @@ docker-compose logs -f
 
 ### Commands File Mount
 
-The `commands.json` file is mounted as a read-only volume from the host system. This allows you to:
+The `public/data` directory (containing `commands.json`) is mounted as a read-only volume from the host system. This allows you to:
 
 - Customize available commands without rebuilding the image
 - Share command configurations across multiple deployments
 - Update commands by simply restarting the container
 
-**Mount Path**: `/usr/share/nginx/html/commands.json`
+**Mount Path**: `/usr/share/nginx/html/data`
 
 ### Environment Variables
 
@@ -95,7 +95,7 @@ By default, nginx serves on port 80. To use a different port on the host:
 docker run -d \
   --name command-builder \
   -p 3000:80 \
-  -v $(pwd)/public/commands.json:/usr/share/nginx/html/commands.json:ro \
+  -v $(pwd)/public/data:/usr/share/nginx/html/data:ro \
   ghcr.io/danielraab/command-builder:latest
 ```
 
@@ -131,16 +131,16 @@ The final image is based on `nginx:alpine`, providing a minimal footprint optimi
 If you see an error like:
 ```
 docker: Error response from daemon: failed to create task for container: OCI runtime create failed: 
-unable to start container process: error mounting "/path/to/commands.json" to rootfs: not a directory
+unable to start container process: error mounting "/path/to/data" to rootfs: not a directory
 ```
 
-**Cause**: Docker requires that the source file exists on the host before mounting. If the file doesn't exist, Docker creates a directory instead, causing the mount to fail.
+**Cause**: Docker requires that the source directory exists on the host before mounting.
 
-**Solution**: Ensure the `public/commands.json` file exists before starting the container:
+**Solution**: Ensure the `public/data` directory exists before starting the container:
 
 ```bash
 # From the project root
-ls -la public/commands.json
+ls -la public/data/commands.json
 
 # If the file doesn't exist, copy it from the repository
 # Or create it with proper content
@@ -152,7 +152,7 @@ When running from a different directory, use absolute paths:
 docker run -d \
   --name command-builder \
   -p 8080:80 \
-  -v /absolute/path/to/public/commands.json:/usr/share/nginx/html/commands.json:ro \
+  -v /absolute/path/to/public/data:/usr/share/nginx/html/data:ro \
   ghcr.io/danielraab/command-builder:latest
 ```
 
@@ -170,7 +170,7 @@ Change the host port mapping:
 docker run -d \
   --name command-builder \
   -p 8081:80 \
-  -v $(pwd)/public/commands.json:/usr/share/nginx/html/commands.json:ro \
+  -v $(pwd)/public/data:/usr/share/nginx/html/data:ro \
   ghcr.io/danielraab/command-builder:latest
 ```
 
@@ -183,7 +183,7 @@ docker inspect command-builder | grep -A 5 Mounts
 
 Ensure `commands.json` exists and is readable:
 ```bash
-ls -la public/commands.json
+ls -la public/data/commands.json
 ```
 
 ### Updating commands.json
@@ -208,7 +208,7 @@ docker-compose restart
      --memory="256m" \
      --cpus="0.5" \
      -p 8080:80 \
-     -v $(pwd)/public/commands.json:/usr/share/nginx/html/commands.json:ro \
+     -v $(pwd)/public/data:/usr/share/nginx/html/data:ro \
      ghcr.io/danielraab/command-builder:latest
    ```
 3. **Use a reverse proxy** (nginx, Traefik) for SSL/TLS termination

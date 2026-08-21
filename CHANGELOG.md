@@ -7,6 +7,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.2.1] - 2026-08-21
+
+### Added
+- `ssh-keygen` command definition
+
+### Changed
+- Moved `commands.json` into `public/data/` for cleaner Docker volume mounting (mount the `data` directory instead of a single file)
+
+### Fixed
+- Updated TypeScript to `~6.0.2` to satisfy the `@angular/build@22.1.4` peer dependency
+
 ## [0.2.0] - 2026-01-13
 
 ### Added
